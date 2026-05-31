@@ -15,7 +15,7 @@ To recreate this project with the same configuration:
 
 ```sh
 # recreate this project
-pnpm dlx sv@0.15.3 create --template minimal --types ts --install pnpm .
+bun x sv@0.15.3 create --template minimal --types ts --add tailwindcss="plugins:typography,forms" eslint prettier sveltekit-adapter="adapter:vercel" better-auth="demo:password" mcp="ide:vscode,claude-code+setup:local" drizzle="database:postgresql+postgresql:postgres.js+docker:yes" --install bun Facturator
 ```
 
 ## Developing
