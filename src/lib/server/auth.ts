@@ -6,7 +6,9 @@ import { getRequestEvent } from '$app/server';
 import { db } from '$lib/server/db';
 
 export const auth = betterAuth({
-	baseURL: env.ORIGIN,
+	// Forzamos un baseURL válido también en dev.
+	// Según el reporte del usuario, se está probando en localhost:5175.
+	baseURL: env.BETTER_AUTH_URL ?? env.ORIGIN ?? 'http://localhost:5173',
 	secret: env.BETTER_AUTH_SECRET,
 	database: drizzleAdapter(db, { provider: 'pg' }),
 	emailAndPassword: { enabled: true },

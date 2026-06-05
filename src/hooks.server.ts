@@ -1,18 +1,23 @@
 import type { Handle } from '@sveltejs/kit';
-import { building } from '$app/environment';
-import { auth } from '$lib/server/auth';
-import { svelteKitHandler } from 'better-auth/svelte-kit';
+import { redirect } from '@sveltejs/kit';
 
-//ejemplo
-const handleBetterAuth: Handle = async ({ event, resolve }) => {
-	const session = await auth.api.getSession({ headers: event.request.headers });
+const LOGIN_PATH = '/login';
+const APP_PREFIX = '/app';
 
-	if (session) {
-		event.locals.session = session.session;
-		event.locals.user = session.user;
-	}
+export const handle: Handle = async ({ event, resolve }) => {
+  const raw = event.cookies.get('mock_session');
 
-	return svelteKitHandler({ event, resolve, auth, building });
+  if (raw) {
+    try {
+      event.locals.user = JSON.parse(raw);
+    } catch {
+      event.cookies.delete('mock_session', { path: '/' });
+    }
+  }
+
+  if (!event.locals.user && event.url.pathname.startsWith(APP_PREFIX)) {
+    throw redirect(302, LOGIN_PATH);
+  }
+
+  return resolve(event);
 };
-
-export const handle: Handle = handleBetterAuth;

@@ -1,0 +1,16 @@
+- [ ] Implementar auth mock (login/register) y protección de rutas /app/\* en SvelteKit (con cookie/local mock).
+- [ ] Crear layout shell para /app con Sidebar + Topbar (WS indicator + month chip).
+- [ ] Crear rutas:
+  - [ ] / (Landing)
+  - [ ] /login (Login/Register)
+  - [ ] /app/dashboard (migrar dashboard actual)
+  - [ ] /app/upload (migrar upload actual)
+  - [ ] /app/history (tabla + filtros con mocks)
+  - [ ] /app/budget (budget + barras + alerts con mocks)
+- [ ] Crear componentes:
+  - [ ] SpendingChart (simple bars, compatible con prototipo)
+  - [ ] BudgetBar
+  - [ ] Sidebar
+  - [ ] Topbar
+- [ ] Integrar UI existente (CategoryBadge, ReceiptCard, UploadDropzone) dentro de las nuevas páginas.
+- [ ] Validar que el login realmente bloquea /app/\* y redirige a /login.
