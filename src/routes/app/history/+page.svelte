@@ -1,52 +1,190 @@
 <script lang="ts">
-	import { mockHistoryReceipts } from '$lib/mock/lensledger';
-	import { receiptStatusLabel } from '$lib/mock/lensledger';
-	import { ReceiptStatus } from '$lib/api';
+    import { mockHistoryReceipts } from '$lib/mock/lensledger';
+    import { receiptStatusLabel } from '$lib/mock/lensledger';
+    import { ReceiptStatus } from '$lib/api';
+
+	const statusMap: Record<string, ReceiptStatus> = {
+		done: ReceiptStatus.Done,
+		processing: ReceiptStatus.Processing,
+		pending: ReceiptStatus.Pending,
+		error: ReceiptStatus.Error
+	};
 
 	const labelForMock = (s: (typeof mockHistoryReceipts)[number]['status']) => {
-		return receiptStatusLabel(
-			s === 'done'
-				? ReceiptStatus.Done
-				: s === 'processing'
-					? ReceiptStatus.Processing
-					: s === 'pending'
-						? ReceiptStatus.Pending
-						: ReceiptStatus.Error
-		);
+		const status = statusMap[s] ?? ReceiptStatus.Error;
+		
+		return receiptStatusLabel(status);
 	};
 </script>
 
-<main class="min-h-screen bg-[#0b0d0f] px-6 py-10 text-[#c8d0da]">
-	<div class="mx-auto flex w-full max-w-5xl flex-col gap-6">
-		<header class="flex flex-col gap-2">
-			<p class="font-mono text-[0.7rem] tracking-[0.36em] text-[#5a6170] uppercase">LensLedger</p>
-			<h1 class="font-serif text-3xl text-[#eef1f5]">Historial</h1>
-			<p class="text-sm text-[#8b95a3]">Mock listo para completar UI.</p>
-		</header>
+<main class="history">
+    <div class="history__wrap">
+        <header class="header">
+            <p class="header__eyebrow">LensLedger</p>
+            <h1 class="header__title">Historial</h1>
+            <p class="header__sub">Mock listo para completar UI.</p>
+        </header>
 
-		<section class="rounded-xl border border-[#2a2e35] bg-[#111316] p-5">
-			<h2 class="mb-3 text-sm font-semibold text-[#eef1f5]">Recibos (mock)</h2>
-			<div class="grid grid-cols-1 gap-3">
-				{#each mockHistoryReceipts.slice(0, 6) as r (r.merchant + r.date)}
-					<div class="rounded-lg border border-[#2a2e35] bg-[#0b0d0f]/20 p-4">
-						<div class="flex items-start justify-between gap-4">
-							<div>
-								<p class="text-sm font-semibold text-[#eef1f5]">{r.merchant}</p>
-								<p class="text-sm text-[#c8d0da]">{r.amount}</p>
-								<p class="font-mono text-[0.6rem] tracking-[0.28em] text-[#5a6170] uppercase">
-									{r.category} · {r.date}
-								</p>
-							</div>
-							<div class="text-right">
-								<p class="font-mono text-[0.62rem] tracking-[0.28em] text-[#8b95a3] uppercase">
-									estado
-								</p>
-								<p class="mt-1 font-mono text-sm text-[#eef1f5]">{labelForMock(r.status)}</p>
-							</div>
-						</div>
-					</div>
-				{/each}
-			</div>
-		</section>
-	</div>
+        <section class="panel">
+            <h2 class="panel__title">Recibos (mock)</h2>
+            <div class="panel__list">
+                {#each mockHistoryReceipts.slice(0, 6) as r (r.merchant + r.date)}
+                    <article class="receipt-item">
+                        <div class="receipt-item__details">
+                            <p class="receipt-item__merchant">{r.merchant}</p>
+                            <p class="receipt-item__amount">{r.amount}</p>
+                            <p class="receipt-item__meta">
+                                {r.category} · {r.date}
+                            </p>
+                        </div>
+                        <div class="receipt-item__status">
+                            <p class="receipt-item__status-label">estado</p>
+                            <p class="receipt-item__status-value">{labelForMock(r.status)}</p>
+                        </div>
+                    </article>
+                {/each}
+            </div>
+        </section>
+    </div>
 </main>
+
+<style lang="scss">
+    $font-serif: 'DM Serif Display', serif;
+    $font-mono: 'DM Mono', monospace;
+
+    $color-bg-main: #0b0d0f;
+    $color-bg-card: #111316;
+    $color-bg-item: rgba(11, 13, 15, 0.2);
+    $color-border: #2a2e35;
+
+    $color-text-main: #c8d0da;
+    $color-text-light: #eef1f5;
+    $color-text-muted: #8b95a3;
+    $color-text-eyebrow: #5a6170;
+
+    .history {
+        min-height: 100vh;
+        background-color: $color-bg-main;
+        padding: 2.5rem 1.5rem;
+        color: $color-text-main;
+
+        &__wrap {
+            margin: 0 auto;
+            display: flex;
+            width: 100%;
+            max-width: 64rem;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+    }
+
+    .header {
+        display: flex;
+        flex-direction: column;
+        gap: 0.5rem;
+
+        &__eyebrow {
+            font-family: $font-mono;
+            font-size: 0.7rem;
+            letter-spacing: 0.36em;
+            color: $color-text-eyebrow;
+            text-transform: uppercase;
+            margin: 0;
+        }
+
+        &__title {
+            font-family: $font-serif;
+            font-size: 1.875rem;
+            color: $color-text-light;
+            margin: 0;
+        }
+
+        &__sub {
+            font-size: 0.875rem;
+            color: $color-text-muted;
+            margin: 0;
+        }
+    }
+
+    .panel {
+        border-radius: 0.75rem;
+        border: 0.0625rem solid $color-border;
+        background-color: $color-bg-card;
+        padding: 1.25rem;
+
+        &__title {
+            margin: 0 0 0.75rem 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: $color-text-light;
+        }
+
+        &__list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+    }
+
+    .receipt-item {
+        border-radius: 0.5rem;
+        border: 0.0625rem solid $color-border;
+        background-color: $color-bg-item;
+        padding: 1rem;
+        display: flex;
+        align-items: flex-start;
+        justify-content: space-between;
+        gap: 1rem;
+
+        &__details {
+            display: flex;
+            flex-direction: column;
+            gap: 0.125rem;
+        }
+
+        &__merchant {
+            margin: 0;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: $color-text-light;
+        }
+
+        &__amount {
+            margin: 0;
+            font-size: 0.875rem;
+            color: $color-text-main;
+        }
+
+        &__meta {
+            margin: 0.25rem 0 0 0;
+            font-family: $font-mono;
+            font-size: 0.6rem;
+            letter-spacing: 0.28em;
+            color: $color-text-eyebrow;
+            text-transform: uppercase;
+        }
+
+        &__status {
+            text-align: right;
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+        }
+
+        &__status-label {
+            margin: 0;
+            font-family: $font-mono;
+            font-size: 0.62rem;
+            letter-spacing: 0.28em;
+            color: $color-text-muted;
+            text-transform: uppercase;
+        }
+
+        &__status-value {
+            margin: 0;
+            font-family: $font-mono;
+            font-size: 0.875rem;
+            color: $color-text-light;
+        }
+    }
+</style>

@@ -145,51 +145,39 @@ export const getCurrentUserMock = (): User => ({
 export const getReceiptMocks = (): Receipt[] => [...mockReceipts];
 
 export async function uploadReceipt(file: File, userId: string): Promise<Receipt> {
-	try {
-		if (!userId) {
-			throw new Error('userId is required');
-		}
-
-		await delay(650);
-
-		const receipt: Receipt = {
-			id: createId('rcpt'),
-			userId,
-			imageUrl: `/uploads/receipts/${encodeURIComponent(file.name)}`,
-			rawText: '',
-			status: ReceiptStatus.Processing,
-			createdAt: new Date().toISOString()
-		};
-
-		mockReceipts.unshift(receipt);
-		return receipt;
-	} catch (error) {
-		throw error;
+	if (!userId) {
+		throw new Error('userId is required');
 	}
+
+	await delay(650);
+
+	const receipt: Receipt = {
+		id: createId('rcpt'),
+		userId,
+		imageUrl: `/uploads/receipts/${encodeURIComponent(file.name)}`,
+		rawText: '',
+		status: ReceiptStatus.Processing,
+		createdAt: new Date().toISOString()
+	};
+
+	mockReceipts.unshift(receipt);
+	return receipt;
 }
 
 export async function getTransactions(userId: string): Promise<Transaction[]> {
-	try {
-		if (!userId) {
-			throw new Error('userId is required');
-		}
-
-		await delay(420);
-		return mockTransactions.filter((txn) => txn.userId === userId);
-	} catch (error) {
-		throw error;
+	if (!userId) {
+		throw new Error('userId is required');
 	}
+
+	await delay(420);
+	return mockTransactions.filter((txn) => txn.userId === userId);
 }
 
 export async function getBudgets(userId: string): Promise<Budget[]> {
-	try {
-		if (!userId) {
-			throw new Error('userId is required');
-		}
-
-		await delay(380);
-		return mockBudgets.filter((budget) => budget.userId === userId);
-	} catch (error) {
-		throw error;
+	if (!userId) {
+		throw new Error('userId is required');
 	}
+
+	await delay(380);
+	return mockBudgets.filter((budget) => budget.userId === userId);
 }

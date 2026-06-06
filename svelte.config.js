@@ -1,3 +1,4 @@
+import { vitePreprocess } from '@sveltejs/vite-plugin-svelte';
 import adapter from '@sveltejs/adapter-vercel';
 
 /** @type {import('@sveltejs/kit').Config} */
@@ -14,7 +15,8 @@ const config = {
 				include: [...config.include, '../drizzle.config.ts']
 			})
 		}
-	}
+	},
+	preprocess: [vitePreprocess()]
 };
 
 export default config;

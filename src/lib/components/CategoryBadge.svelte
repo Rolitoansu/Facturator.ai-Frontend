@@ -1,37 +1,79 @@
 <script lang="ts">
-	export interface CategoryBadgeProps {
-		category: string;
-	}
+    export interface CategoryBadgeProps {
+        category: string;
+    }
 
-	const baseClasses =
-		'inline-flex items-center rounded-full border px-2.5 py-1 text-[0.68rem] font-medium uppercase tracking-[0.14em] font-mono';
+    const validCategories = new Set([
+        'alimentacion',
+        'transporte',
+        'ropa',
+        'ocio',
+        'salud',
+        'hogar',
+        'suscripciones'
+    ]);
 
-	const defaultStyle = 'bg-[#1e2126] text-[#8b95a3] border-[#2a2e35]';
+    const normalizeCategory = (value: string) =>
+        value
+            .trim()
+            .toLowerCase()
+            .normalize('NFD')
+            .replace(/[\u0300-\u036f]/g, '');
 
-	const categoryStyles: Record<string, string> = {
-		alimentacion: 'bg-[#4ade80]/10 text-[#4ade80] border-[#4ade80]/30',
-		transporte: 'bg-[#22d3ee]/10 text-[#22d3ee] border-[#22d3ee]/30',
-		ropa: 'bg-[#f87171]/10 text-[#f87171] border-[#f87171]/30',
-		ocio: 'bg-[#f59e0b]/10 text-[#f59e0b] border-[#f59e0b]/30',
-		salud: 'bg-[#60a5fa]/10 text-[#60a5fa] border-[#60a5fa]/30',
-		hogar: 'bg-[#a78bfa]/10 text-[#a78bfa] border-[#a78bfa]/30',
-		suscripciones: 'bg-[#ff3e00]/10 text-[#ff3e00] border-[#ff3e00]/30'
-	};
+    const formatLabel = (value: string) => value.trim().replace(/[_-]+/g, ' ') || 'otros';
 
-	const normalizeCategory = (value: string) =>
-		value
-			.trim()
-			.toLowerCase()
-			.normalize('NFD')
-			.replace(/[\u0300-\u036f]/g, '');
+    const { category }: CategoryBadgeProps = $props();
 
-	const formatLabel = (value: string) => value.trim().replace(/[_-]+/g, ' ') || 'otros';
-
-	let { category }: CategoryBadgeProps = $props();
-
-	const normalized = $derived(normalizeCategory(category || 'otros'));
-	const badgeStyle = $derived(categoryStyles[normalized] ?? defaultStyle);
-	const label = $derived(formatLabel(category));
+    const label = $derived(formatLabel(category || ''));
+    
+    const modifier = $derived.by(() => {
+        const normalized = normalizeCategory(category || 'otros');
+        return validCategories.has(normalized) ? normalized : 'default';
+    });
 </script>
 
-<span class={[baseClasses, badgeStyle]}>{label}</span>
+<span class:badge--default={modifier === 'default'} class={`badge--${modifier}`}>
+    {label}
+</span>
+
+<style lang="scss">
+    $font-mono: 'DM Mono', monospace;
+
+    $color-bg-default: #1e2126;
+    $color-text-default: #8b95a3;
+    $color-border-default: #2a2e35;
+
+    $category-colors: (
+        'alimentacion': #4ade80,
+        'transporte': #22d3ee,
+        'ropa': #f87171,
+        'ocio': #f59e0b,
+        'salud': #60a5fa,
+        'hogar': #a78bfa,
+        'suscripciones': #ff3e00
+    );
+
+    .badge {
+        display: inline-flex;
+        align-items: center;
+        border-radius: 9999px;
+        border: 0.0625rem solid $color-border-default;
+        background-color: $color-bg-default;
+        padding: 0.25rem 0.625rem;
+        font-family: $font-mono;
+        font-size: 0.68rem;
+        font-weight: 500;
+        color: $color-text-default;
+        text-transform: uppercase;
+        letter-spacing: 0.14em;
+        white-space: nowrap;
+
+        @each $name, $color in $category-colors {
+            &--#{$name} {
+                background-color: rgba($color, 0.1);
+                color: $color;
+                border-color: rgba($color, 0.3);
+            }
+        }
+    }
+</style>
