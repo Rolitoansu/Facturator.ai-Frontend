@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { enhance } from '$app/forms';
+	import { enhance } from "$app/forms";
 
 	let mode = $state<'login' | 'register'>('login');
 
@@ -49,7 +49,6 @@
 				Register
 			</button>
 		</div>
-
 		{#if mode === 'login'}
 			<form
 				method="post"

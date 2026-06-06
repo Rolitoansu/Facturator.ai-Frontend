@@ -1,12 +1,7 @@
 <script lang="ts">
-	// Landing usa navegación con full reload para evitar warnings ESLint de goto()
+
 </script>
 
-<svelte:head>
-	<title>LensLedger — Project Blueprint</title>
-</svelte:head>
-
-<!-- HERO / LANDING -->
 <section id="hero">
 	<div class="wrap">
 		<p class="hero-eyebrow">Portfolio Project · 2026</p>
@@ -36,7 +31,6 @@
 			</p>
 		</div>
 
-		<!-- Quick metrics (simple, mock) -->
 		<div class="hero-metrics mt-12">
 			<div class="metric">
 				<div class="metric-val">2</div>
@@ -59,14 +53,11 @@
 </section>
 
 <style>
-	/* Reuse some classes from blueprint via local minimal styling */
-	:global(body) {
-		margin: 0;
+	
+	h1 {
+		font-family: 'DM Serif Display', serif;
+		font-weight: 700;
 	}
-	:global(html) {
-		scroll-behavior: smooth;
-	}
-
 	.wrap {
 		max-width: 1100px;
 		margin: 0 auto;
@@ -97,6 +88,7 @@
 		letter-spacing: -0.02em;
 		margin-bottom: 1.5rem;
 		line-height: 1;
+		animation: fadeUp 0.5s ease both;
 	}
 
 	.hero-title em {
