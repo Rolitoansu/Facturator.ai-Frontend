@@ -1,33 +1,64 @@
+@font-face {
+	font-family: 'Instrument Sans';
+	src: url('/fonts/Instrument_Sans.ttf') format('truetype');
+	font-weight: 400;
+	font-style: swap;
+}
+
+@font-face {
+	font-family: 'DMSerifDisplay';
+	src: url('/fonts/DMSerifDisplay.ttf') format('truetype');
+	font-weight: 400;
+	font-style: swap;
+}
+
 :root {
-    --border: #2a2e35;
+	--border: #2a2e35;
+	--color-bg: #0b0d0f;
+	--color-bg2: #111316;
+	--color-bg3: #181b1f;
+	--color-surface: #1e2126;
+	--color-border: #2a2e35;
+	--color-border2: #353b44;
+	--color-heading: #eef1f5;
+	--color-body: #c8d0da;
+	--color-subtle: #8b95a3;
+	--color-muted: #5a6170;
+	--color-blur-bg: rgba(11, 13, 15, 0.8);
 }
 
-@font-face {
-    font-family: 'Instrument Sans';
-    src: url('/fonts/Instrument_Sans.ttf') format('truetype');
-    font-weight: 400;
-    font-style: swap;
-}
-
-@font-face {
-    font-family: 'DMSerifDisplay';
-    src: url('/fonts/DMSerifDisplay.ttf') format('truetype');
-    font-weight: 400;
-    font-style: swap;
+:root[data-theme='light'] {
+	--border: #e2e8f0;
+	--color-bg: #f8fafc;
+	--color-bg2: #ffffff;
+	--color-bg3: #f1f5f9;
+	--color-surface: #ffffff;
+	--color-border: #cbd5e1;
+	--color-border2: #e2e8f0;
+	--color-heading: #0f172a;
+	--color-body: #334155;
+	--color-subtle: #475569;
+	--color-muted: #64748b;
+	--color-blur-bg: rgba(248, 250, 252, 0.8);
 }
 
 body {
-    background: #0b0d0f;
-    color: #c8d0da;
-    font-family: "Instrument Sans";
+	background: var(--color-bg);
+	color: var(--color-body);
+	font-family: 'Instrument Sans';
+	transition:
+		background-color 0.3s ease,
+		color 0.3s ease;
 }
 
 body::after {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image: linear-gradient(var(--border) 1px, transparent 1px), linear-gradient(90deg, var(--border) 1px, transparent 1px);
-    background-size: 80px 80px;
-    opacity: 0.15;
-    pointer-events: none
+	content: '';
+	position: fixed;
+	inset: 0;
+	background-image:
+		linear-gradient(var(--border) 1px, transparent 1px),
+		linear-gradient(90deg, var(--border) 1px, transparent 1px);
+	background-size: 80px 80px;
+	opacity: 0.15;
+	pointer-events: none;
 }

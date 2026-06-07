@@ -1,33 +1,17 @@
 import { writable } from 'svelte/store';
 
-import { ReceiptStatus, getCurrentUserMock, getTransactions } from '$lib/api';
-import type { Receipt, Transaction } from '$lib/api';
+import { ReceiptStatus } from '$lib/types/api.types';
+import type { Receipt } from '$lib/types/api.types';
+import type {
+	TransactionItem,
+	TransactionUpdate,
+	TransactionsState
+} from '$lib/types/transactions.types';
+import { getCurrentUserMock } from '$lib/api/user';
+import { getTransactions } from '$lib/api/transactions';
+import { mapTransaction, receiptToProcessingItem } from '$lib/utils/receipt';
 
-export interface TransactionItem extends Transaction {
-	status: ReceiptStatus;
-}
-
-export type TransactionUpdate = Partial<Omit<TransactionItem, 'id' | 'receiptId' | 'userId'>>;
-
-export interface TransactionsState {
-	items: TransactionItem[];
-	loading: boolean;
-	error: string | null;
-}
-
-const mapTransaction = (transaction: Transaction): TransactionItem => ({
-	...transaction,
-	status: ReceiptStatus.Done
-});
-
-const toDateString = (value: string) => {
-	const date = new Date(value);
-	if (Number.isNaN(date.getTime())) {
-		return new Date().toISOString().slice(0, 10);
-	}
-
-	return date.toISOString().slice(0, 10);
-};
+export type { TransactionItem, TransactionUpdate, TransactionsState };
 
 const createTransactionsStore = () => {
 	const currentUser = getCurrentUserMock();
@@ -53,17 +37,7 @@ const createTransactionsStore = () => {
 	};
 
 	const addProcessingReceipt = (receipt: Receipt) => {
-		const processingItem: TransactionItem = {
-			id: `txn_${receipt.id}`,
-			receiptId: receipt.id,
-			userId: receipt.userId,
-			amount: 0,
-			merchant: 'Processing receipt',
-			category: 'otros',
-			date: toDateString(receipt.createdAt),
-			status: ReceiptStatus.Processing
-		};
-
+		const processingItem = receiptToProcessingItem(receipt);
 		update((state) => ({
 			...state,
 			items: [processingItem, ...state.items]
@@ -83,13 +57,31 @@ const createTransactionsStore = () => {
 		}));
 	};
 
+	const deleteTransactionsByCategory = (category: string) => {
+		update((state) => ({
+			...state,
+			items: state.items.filter((item) => item.category !== category)
+		}));
+	};
+
+	const reassignCategory = (oldCategory: string, newCategory: string) => {
+		update((state) => ({
+			...state,
+			items: state.items.map((item) =>
+				item.category === oldCategory ? { ...item, category: newCategory } : item
+			)
+		}));
+	};
+
 	void load();
 
 	return {
 		subscribe,
 		reload: load,
 		addProcessingReceipt,
-		updateReceiptStatus
+		updateReceiptStatus,
+		deleteTransactionsByCategory,
+		reassignCategory
 	};
 };
 

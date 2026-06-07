@@ -1,506 +1,585 @@
 <script lang="ts">
-    import { resolve } from '$app/paths';
+	import { resolve } from '$app/paths';
+	import { BADGES, METRICS } from '$lib/constants/landing';
+	import '$lib/styles/home.scss';
 
-    const badges = [
-        { label: 'Go 1.22', modifier: 'go' },
-        { label: 'SvelteKit 2', modifier: 'svelte' },
-        { label: 'Python 3.11', modifier: 'python' },
-        { label: 'PostgreSQL', modifier: 'pg' },
-        { label: 'Redis', modifier: 'redis' },
-        { label: 'EasyOCR', modifier: 'green' },
-        { label: 'WebSockets', modifier: 'cyan' },
-        { label: 'scikit-learn', modifier: 'amber' }
-    ];
+	// Scanning Simulator State
+	let scanState = $state<'idle' | 'scanning' | 'processing' | 'done'>('idle');
+	let scanProgress = $state(0);
+	let scanStep = $state('');
 
-    const metrics = [
-        { val: '2', label: 'Devs' },
-        { val: '10', label: 'Semanas' },
-        { val: '5', label: 'Servicios' },
-        { val: '3', label: 'Capas ML' }
-    ];
+	// Pricing Billing Cycle State
+	let billingCycle = $state<'monthly' | 'yearly'>('monthly');
 
-    const pitchCards = [
-        {
-            title: 'Portfolio que se demuestra en 30 segundos',
-            body: 'Cualquier reclutador puede ver el funcionamiento real en vivo: subir una foto y ver el resultado procesado. No es un CRUD con UI bonita, es un pipeline de IA funcionando de extremo a extremo.'
-        },
-        {
-            title: 'Stack inusual y diferenciador',
-            body: 'Go en el backend + SvelteKit en el frontend es una combinación que aparece muy poco en portfolios junior. Demuestra criterio técnico propio y capacidad de aprender más allá de los caminos más trillados.'
-        },
-        {
-            title: 'ML real, no decorativo',
-            body: 'EasyOCR + clasificador scikit-learn no es una demo de "Hello World con TensorFlow". Es un pipeline de inferencia con un modelo entrenado, servido via FastAPI y consumido desde Go.'
-        }
-    ];
+	// FAQ Accordion State
+	let openFaqIndex = $state<number | null>(null);
+
+	// Theme state synchronized with document structure
+	let theme = $state<'dark' | 'light'>('dark');
+
+	$effect(() => {
+		const storedTheme = localStorage.getItem('theme') as 'dark' | 'light';
+		if (storedTheme) {
+			theme = storedTheme;
+		} else if (window.matchMedia('(prefers-color-scheme: light)').matches) {
+			theme = 'light';
+		}
+	});
+
+	$effect(() => {
+		document.documentElement.setAttribute('data-theme', theme);
+		localStorage.setItem('theme', theme);
+	});
+
+	const toggleTheme = () => {
+		theme = theme === 'dark' ? 'light' : 'dark';
+	};
+
+	const faqs = [
+		{
+			q: '¿Cómo funciona exactamente la extracción con IA?',
+			a: 'Utilizamos visión por computadora avanzada (OCR) combinada con modelos de procesamiento de lenguaje natural. Cuando subes una foto o PDF de un recibo, nuestro motor localiza el comercio, extrae la fecha, calcula el importe total y categoriza el gasto de manera automática sin que tengas que rellenar ningún formulario.'
+		},
+		{
+			q: '¿Es seguro almacenar mis tickets y datos financieros aquí?',
+			a: 'Absolutamente. Todas las imágenes y datos se cifran en tránsito y en reposo. Además, no enlazamos directamente con tus cuentas bancarias reales, lo que proporciona una capa de privacidad y aislamiento total frente a accesos no autorizados.'
+		},
+		{
+			q: '¿Puedo definir presupuestos mensuales personalizados?',
+			a: 'Sí. Puedes establecer presupuestos independientes para diferentes categorías (como alimentación, transporte, ocio, etc.). El sistema te avisará con micro-alertas cuando te acerques al 80% o superes el límite configurado.'
+		},
+		{
+			q: '¿Se pueden exportar los datos para contabilidad?',
+			a: 'Por supuesto. Toda tu información se almacena estructurada y lista para ser consultada, permitiendo mantener un registro ordenado ideal para exportar de cara a deducciones fiscales, autónomos o control presupuestario personal.'
+		}
+	];
+
+	const triggerScan = () => {
+		if (scanState !== 'idle') return;
+		scanState = 'scanning';
+		scanProgress = 0;
+		scanStep = 'Detectando bordes de la imagen...';
+
+		const interval = setInterval(() => {
+			scanProgress += 2;
+			if (scanProgress === 30) {
+				scanStep = 'Procesando texto con OCR...';
+			} else if (scanProgress === 65) {
+				scanStep = 'Extrayendo importe y comercio...';
+			} else if (scanProgress === 85) {
+				scanStep = 'Categorizando automáticamente...';
+			}
+
+			if (scanProgress >= 100) {
+				clearInterval(interval);
+				scanState = 'done';
+				scanStep = '¡Escaneo finalizado con éxito!';
+			}
+		}, 50);
+	};
+
+	const resetScan = () => {
+		scanState = 'idle';
+		scanProgress = 0;
+		scanStep = '';
+	};
+
+	const toggleFaq = (index: number) => {
+		openFaqIndex = openFaqIndex === index ? null : index;
+	};
 </script>
 
 <svelte:head>
-    <title>LensLedger — Project Blueprint</title>
+	<title>LensLedger — Facturación Inteligente y Control de Gastos con IA</title>
 </svelte:head>
 
 <div class="landing-layout">
-    <nav class="nav">
-        <div class="nav__inner">
-            <a class="nav__logo" href={resolve('/')}>
-                <span class="nav__logo-dot"></span>LensLedger
-            </a>
-        </div>
-    </nav>
+	<!-- Navigation bar -->
+	<nav class="nav">
+		<div class="nav__inner">
+			<a class="nav__logo" href={resolve('/')}>
+				<span class="nav__logo-dot"></span>LensLedger
+			</a>
+			<div class="nav__links">
+				<a class="nav__link" href="#features">Características</a>
+				<a class="nav__link" href="#demo">Escáner</a>
+				<a class="nav__link" href="#pricing">Precios</a>
+				<a class="nav__link" href="#faqs">Preguntas</a>
+			</div>
+			<div class="nav__actions">
+				<!-- Theme toggle -->
+				<button
+					type="button"
+					class="theme-toggle"
+					onclick={toggleTheme}
+					aria-label="Cambiar tema de color"
+					style="background: transparent; border: none; cursor: pointer; color: var(--color-heading); display: flex; align-items: center; justify-content: center; padding: 0.5rem; border-radius: 0.375rem; transition: background 0.2s;"
+				>
+					{#if theme === 'dark'}
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							style="width: 1.1rem; height: 1.1rem;"
+						>
+							<path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
+						</svg>
+					{:else}
+						<svg
+							viewBox="0 0 24 24"
+							fill="none"
+							stroke="currentColor"
+							stroke-width="2"
+							stroke-linecap="round"
+							stroke-linejoin="round"
+							style="width: 1.1rem; height: 1.1rem;"
+						>
+							<circle cx="12" cy="12" r="5"></circle>
+							<line x1="12" y1="1" x2="12" y2="3"></line>
+							<line x1="12" y1="21" x2="12" y2="23"></line>
+							<line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line>
+							<line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line>
+							<line x1="1" y1="12" x2="3" y2="12"></line>
+							<line x1="21" y1="12" x2="23" y2="12"></line>
+							<line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line>
+							<line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
+						</svg>
+					{/if}
+				</button>
+				<a href={resolve('/login?mode=login')} class="nav__btn nav__btn--secondary">Entrar</a>
+				<a href={resolve('/login?mode=register')} class="nav__btn nav__btn--primary">Registrarse</a>
+			</div>
+		</div>
+	</nav>
 
-    <header class="hero" id="hero" aria-labelledby="hero-title">
-        <div class="hero__glow"></div>
-        <div class="container">
-            <p class="hero__eyebrow">Portfolio Project · 2026</p>
-            <h1 class="hero__title" id="hero-title">Lens<em class="hero__title-emphasis">Ledger</em></h1>
-            <p class="hero__sub">
-                Aplicación web de gestión de gastos personales con visión por computadora. Sube un recibo, la IA extrae los datos automáticamente y los integra en tu dashboard financiero en tiempo real.
-            </p>
+	<!-- Hero Section -->
+	<header class="hero" id="hero" aria-labelledby="hero-title">
+		<div class="hero__glow"></div>
+		<div class="hero__glow hero__glow--purple"></div>
+		<div class="container hero__grid">
+			<div class="hero__left">
+				<p class="hero__eyebrow">Digitalización Financiera Inteligente</p>
+				<h1 class="hero__title" id="hero-title">
+					Tus facturas bajo control, <span class="gradient-text">de un vistazo</span>
+				</h1>
+				<p class="hero__sub">
+					Sube tus tickets y facturas. Nuestra IA extrae importes, comercios, fechas y categorías de
+					forma automática. Observa cómo tus presupuestos y estadísticas se actualizan al instante en
+					un dashboard impecable y dinámico.
+				</p>
 
-            <ul class="hero__badges" aria-label="Tecnologías utilizadas">
-                {#each badges as badge (badge.label)}
-                    <li>
-                        <span class="badge badge--{badge.modifier}">{badge.label}</span>
-                    </li>
-                {/each}
-            </ul>
+				<div class="hero__actions">
+					<a href={resolve('/login?mode=register')} class="btn btn--accent btn--large">Pruébalo Gratis</a>
+					<a href="#demo" class="btn btn--outline btn--large">Ver Demostración</a>
+				</div>
 
-            <div class="hero__actions">
-                <a href={resolve('/login')} class="hero__button">
-                    Entrar
-                </a>
-                <p class="hero__actions-text">
-                    Mock de UI (login protegido) listo para conectar backend después.
-                </p>
-            </div>
+				<div class="hero__metrics">
+					{#each METRICS as metric (metric.label)}
+						<div class="metric">
+							<div class="metric__val">{metric.val}</div>
+							<div class="metric__label">{metric.label}</div>
+						</div>
+					{/each}
+				</div>
+			</div>
 
-            <div class="hero__metrics">
-                {#each metrics as metric (metric.label)}
-                    <div class="metric">
-                        <div class="metric__val">{metric.val}</div>
-                        <div class="metric__label">{metric.label}</div>
-                    </div>
-                {/each}
-            </div>
-        </div>
-    </header>
+			<div class="hero__right">
+				<!-- Application CSS Mockup Preview -->
+				<div class="app-mockup">
+					<div class="app-mockup__header">
+						<span class="app-mockup__dot app-mockup__dot--red"></span>
+						<span class="app-mockup__dot app-mockup__dot--yellow"></span>
+						<span class="app-mockup__dot app-mockup__dot--green"></span>
+						<span class="app-mockup__title">lensledger.app/dashboard</span>
+					</div>
+					<div class="app-mockup__body">
+						<!-- Mini metrics -->
+						<div class="mock-row mock-row--three">
+							<div class="mock-card">
+								<span class="mock-card__label">Total Mayo</span>
+								<span class="mock-card__val">€642,80</span>
+							</div>
+							<div class="mock-card">
+								<span class="mock-card__label">Disponible</span>
+								<span class="mock-card__val mock-card__val--green">€257,20</span>
+							</div>
+							<div class="mock-card">
+								<span class="mock-card__label">Escaneados</span>
+								<span class="mock-card__val">12 items</span>
+							</div>
+						</div>
 
-    <section class="pitch" id="pitch">
-        <div class="container">
-            <p class="section-label">01 — El Problema</p>
-            <h2 class="section-title">¿Por qué LensLedger?</h2>
-            
-            <div class="pitch__grid">
-                <div class="pitch__text">
-                    <p class="pitch__desc">
-                        La gente no lleva control de sus gastos, no por falta de voluntad, sino porque registrarlos es tedioso. Las apps actuales requieren introducir datos manualmente. LensLedger elimina esa fricción con una sola acción: subir una foto.
-                    </p>
-                    <p class="pitch__desc pitch__desc--subtle">
-                        El usuario fotografía cualquier ticket, recibo o extracto. El sistema procesa la imagen con OCR, extrae importe, comercio, fecha y categoría automáticamente, y lo añade al historial financiero. Cero formularios. Cero importaciones manuales. Cero CSV.
-                    </p>
-                </div>
-                <div class="pitch__cards">
-                    {#each pitchCards as card (card.title)}
-                        <article class="card">
-                            <h3 class="card__title">{card.title}</h3>
-                            <p class="card__body">{card.body}</p>
-                        </article>
-                    {/each}
-                </div>
-            </div>
-        </div>
-    </section>
+						<!-- Mini Budget card -->
+						<div class="mock-card mock-card--wide">
+							<div class="mock-card__head">
+								<span class="badge badge--green">Alimentación</span>
+								<span class="mock-card__meta">€220.00 / €350.00 EUR</span>
+							</div>
+							<div class="mock-bar">
+								<div class="mock-bar__fill" style="width: 63%;"></div>
+							</div>
+						</div>
+
+						<!-- Mini Chart -->
+						<div class="mock-card mock-card--wide mock-chart">
+							<span class="mock-card__label">Historial de Gastos</span>
+							<div class="mock-chart__bars">
+								<div class="mock-chart__bar" style="height: 40%;"></div>
+								<div class="mock-chart__bar" style="height: 65%;"></div>
+								<div class="mock-chart__bar" style="height: 30%;"></div>
+								<div class="mock-chart__bar" style="height: 50%;"></div>
+								<div class="mock-chart__bar" style="height: 80%;"></div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</header>
+
+	<!-- Trust Logos Area -->
+	<section class="trust-bar">
+		<div class="container">
+			<p class="trust-bar__title">Compatible con tus formatos e integraciones favoritas</p>
+			<div class="trust-bar__logos">
+				<span class="trust-logo">📄 PDFs</span>
+				<span class="trust-logo">📸 Imágenes (PNG/JPG)</span>
+				<span class="trust-logo">📧 Email Forwarding</span>
+				<span class="trust-logo">💬 WhatsApp Upload</span>
+				<span class="trust-logo">📊 Exportación Excel</span>
+			</div>
+		</div>
+	</section>
+
+	<!-- Features Section -->
+	<section class="features" id="features">
+		<div class="container">
+			<div class="section-header">
+				<p class="section-label">01 — Características</p>
+				<h2 class="section-title">Olvídate de rellenar tablas a mano</h2>
+				<p class="section-sub">
+					LensLedger elimina la fricción de llevar la contabilidad personal. Sube una foto y observa
+					la magia de nuestro motor inteligente.
+				</p>
+			</div>
+
+			<div class="features__grid">
+				<article class="feature-card">
+					<div class="feature-card__icon">📷</div>
+					<h3 class="feature-card__title">Escaneo Inteligente OCR</h3>
+					<p class="feature-card__body">
+						Digitaliza cualquier ticket impreso o factura digital. Nuestro extractor con IA lee y
+						estructura la información al instante.
+					</p>
+				</article>
+
+				<article class="feature-card">
+					<div class="feature-card__icon">🏷️</div>
+					<h3 class="feature-card__title">Categorización Automática</h3>
+					<p class="feature-card__body">
+						La IA deduce de forma automática si un recibo pertenece a Alimentación, Transporte, Ocio
+						o Salud, ordenándolos en tu dashboard.
+					</p>
+				</article>
+
+				<article class="feature-card">
+					<div class="feature-card__icon">📊</div>
+					<h3 class="feature-card__title">Gráficos Analíticos</h3>
+					<p class="feature-card__body">
+						Visualiza de manera intuitiva a dónde va tu dinero cada mes para tomar mejores decisiones
+						y optimizar tu capacidad de ahorro.
+					</p>
+				</article>
+
+				<article class="feature-card">
+					<div class="feature-card__icon">🚨</div>
+					<h3 class="feature-card__title">Límites y Alertas</h3>
+					<p class="feature-card__body">
+						Configura presupuestos máximos por categoría. El sistema te avisará con micro-alertas
+						visuales antes de que superes tus límites.
+					</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<!-- Interactive Demo / Scanner Simulator Section -->
+	<section class="demo-section" id="demo">
+		<div class="container">
+			<div class="section-header">
+				<p class="section-label">02 — Simulador de Escaneo</p>
+				<h2 class="section-title">Compruébalo en tiempo real</h2>
+				<p class="section-sub">Haz clic abajo para simular cómo LensLedger procesa un ticket real con visión artificial.</p>
+			</div>
+
+			<div class="demo-box">
+				<div class="demo-box__grid">
+					<!-- Ticket display -->
+					<div class="ticket-view">
+						<div class="ticket-view__paper" class:ticket-view__paper--scanning={scanState === 'scanning'}>
+							<!-- Absolute Bounding Boxes to simulate OCR scanning zones -->
+							{#if scanState === 'scanning'}
+								{#if scanProgress >= 15 && scanProgress < 45}
+									<div class="ocr-bounding-box" style="top: 8%; left: 5%; width: 90%; height: 12%; border-color: var(--color-cyan);"></div>
+								{/if}
+								{#if scanProgress >= 45 && scanProgress < 75}
+									<div class="ocr-bounding-box" style="top: 25%; left: 5%; width: 90%; height: 32%; border-color: var(--color-amber);"></div>
+								{/if}
+								{#if scanProgress >= 75}
+									<div class="ocr-bounding-box" style="top: 70%; left: 5%; width: 90%; height: 18%; border-color: var(--color-accent); border-width: 2px;"></div>
+								{/if}
+							{/if}
+
+							<span class="ticket-view__title">SUPERMERCADOS DIA</span>
+							<span class="ticket-view__divider">-------------------------</span>
+							<span class="ticket-view__item">Pan Rústico ......... 1.20€</span>
+							<span class="ticket-view__item">Manzanas 1kg ........ 2.45€</span>
+							<span class="ticket-view__item">Aceite de Oliva ..... 8.50€</span>
+							<span class="ticket-view__item">Pechuga Pollo ....... 5.35€</span>
+							<span class="ticket-view__divider">-------------------------</span>
+							<span class="ticket-view__total">TOTAL 17.50 EUR</span>
+							<span class="ticket-view__date">Fecha: 07/06/2026</span>
+							
+							{#if scanState === 'scanning'}
+								<div class="ticket-view__laser"></div>
+							{/if}
+						</div>
+					</div>
+
+					<!-- Scan console and results -->
+					<div class="scanner-console">
+						{#if scanState === 'idle'}
+							<h3 class="scanner-console__title">Simulador de Visión por Computadora</h3>
+							<p class="scanner-console__text">
+								Inicia la simulación para observar el proceso de lectura OCR, análisis de texto e integración financiera de un ticket de compra.
+							</p>
+							<button type="button" class="btn btn--accent btn--large" onclick={triggerScan}>
+								🚀 Escanear Ticket de Ejemplo
+							</button>
+						{:else if scanState === 'scanning'}
+							<h3 class="scanner-console__title">Procesando imagen con IA...</h3>
+							<div class="progress-container">
+								<div class="progress-bar">
+									<div class="progress-bar__fill" style="width: {scanProgress}%;"></div>
+								</div>
+								<span class="progress-text">{scanProgress}%</span>
+							</div>
+							<div class="scanner-console__log">
+								<span class="log-dot"></span> {scanStep}
+							</div>
+						{:else if scanState === 'done'}
+							<h3 class="scanner-console__title">¡Gasto Extraído Correctamente!</h3>
+							
+							<!-- Structural extracted result card -->
+							<div class="extracted-card">
+								<div class="extracted-card__header">
+									<span class="badge badge--green">Alimentación</span>
+									<span class="extracted-card__date">2026-06-07</span>
+								</div>
+								<h4 class="extracted-card__merchant">Supermercados Dia</h4>
+								<span class="extracted-card__amount">€17.50 EUR</span>
+								<p class="extracted-card__status">✅ Estado: Añadido al Dashboard</p>
+							</div>
+
+							<div class="scanner-console__actions">
+								<button type="button" class="btn btn--secondary" onclick={resetScan}>
+									🔄 Restablecer
+								</button>
+								<a href={resolve('/login?mode=register')} class="btn btn--accent">
+									Probar Con Mis Tickets
+								</a>
+							</div>
+						{/if}
+					</div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- Pricing Section -->
+	<section class="pricing" id="pricing">
+		<div class="container">
+			<div class="section-header">
+				<p class="section-label">03 — Planes de Precios</p>
+				<h2 class="section-title">Elige el plan ideal para tus finanzas</h2>
+				<p class="section-sub">Empieza gratis y escala a medida que crezcan tus necesidades.</p>
+
+				<!-- Billing cycle switcher -->
+				<div class="pricing-toggle">
+					<button
+						type="button"
+						class="pricing-toggle__btn"
+						class:pricing-toggle__btn--active={billingCycle === 'monthly'}
+						onclick={() => (billingCycle = 'monthly')}
+					>
+						Mensual
+					</button>
+					<button
+						type="button"
+						class="pricing-toggle__btn"
+						class:pricing-toggle__btn--active={billingCycle === 'yearly'}
+						onclick={() => (billingCycle = 'yearly')}
+					>
+						Anual <span class="pricing-toggle__discount">Ahorra 20%</span>
+					</button>
+				</div>
+			</div>
+
+			<div class="pricing__grid">
+				<!-- Card 1 -->
+				<div class="pricing-card">
+					<h3 class="pricing-card__title">Plan Inicial</h3>
+					<span class="pricing-card__price">
+						€0
+						<span class="pricing-card__meta">
+							{billingCycle === 'monthly' ? '/ mes' : '/ mes (anual)'}
+						</span>
+					</span>
+					<p class="pricing-card__desc">Ideal para probar la herramienta y llevar un control básico.</p>
+					<hr class="pricing-card__divider" />
+					<ul class="pricing-card__features">
+						<li>Hasta 15 tickets escaneados al mes</li>
+						<li>Extracción automática de datos con OCR</li>
+						<li>Dashboard financiero mensual</li>
+						<li>Visualización básica de categorías</li>
+					</ul>
+					<a
+						href={resolve('/login?mode=register')}
+						class="btn btn--outline btn--full"
+						style="margin-top: auto;"
+					>
+						Empezar Gratis
+					</a>
+				</div>
+
+				<!-- Card 2 -->
+				<div class="pricing-card pricing-card--featured">
+					<span class="pricing-card__badge">RECOMENDADO</span>
+					<h3 class="pricing-card__title">Plan Pro</h3>
+					<span class="pricing-card__price">
+						{billingCycle === 'monthly' ? '€5.99' : '€4.79'}
+						<span class="pricing-card__meta">
+							{billingCycle === 'monthly' ? '/ mes' : '/ mes (anual)'}
+						</span>
+					</span>
+					<p class="pricing-card__desc">Perfecto para usuarios habituales y autónomos organizados.</p>
+					{#if billingCycle === 'yearly'}
+						<p class="pricing-card__submeta">Facturado anualmente (€57.50 / año)</p>
+					{/if}
+					<hr class="pricing-card__divider" />
+					<ul class="pricing-card__features">
+						<li>Escaneos ilimitados sin restricciones</li>
+						<li>Categorización con IA avanzada</li>
+						<li>Alertas y presupuestos ilimitados</li>
+						<li>Exportación de informes en PDF y CSV</li>
+						<li>Soporte técnico prioritario</li>
+					</ul>
+					<a
+						href={resolve('/login?mode=register')}
+						class="btn btn--accent btn--full"
+						style="margin-top: auto;"
+					>
+						Obtener Pro
+					</a>
+				</div>
+
+				<!-- Card 3 -->
+				<div class="pricing-card">
+					<h3 class="pricing-card__title">Plan Business</h3>
+					<span class="pricing-card__price">
+						{billingCycle === 'monthly' ? '€19.99' : '€15.99'}
+						<span class="pricing-card__meta">
+							{billingCycle === 'monthly' ? '/ mes' : '/ mes (anual)'}
+						</span>
+					</span>
+					<p class="pricing-card__desc">Pensado para pequeños equipos y negocios multi-usuario.</p>
+					{#if billingCycle === 'yearly'}
+						<p class="pricing-card__submeta">Facturado anualmente (€191.90 / año)</p>
+					{/if}
+					<hr class="pricing-card__divider" />
+					<ul class="pricing-card__features">
+						<li>Cuentas de usuario compartidas (hasta 5)</li>
+						<li>Escaneo masivo de tickets en lote</li>
+						<li>Integración directa con software contable</li>
+						<li>Exportación de datos de impuestos directa</li>
+					</ul>
+					<a
+						href={resolve('/login?mode=register')}
+						class="btn btn--outline btn--full"
+						style="margin-top: auto;"
+					>
+						Contactar Soporte
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<!-- FAQs Section -->
+	<section class="faqs" id="faqs">
+		<div class="container">
+			<div class="section-header">
+				<p class="section-label">04 — Preguntas Frecuentes</p>
+				<h2 class="section-title">Resuelve tus dudas sobre LensLedger</h2>
+			</div>
+
+			<div class="faqs__list">
+				{#each faqs as faq, i (i)}
+					<div class="faq-item" class:faq-item--open={openFaqIndex === i}>
+						<button type="button" class="faq-item__header" onclick={() => toggleFaq(i)}>
+							<span class="faq-item__question">{faq.q}</span>
+							<span class="faq-item__icon">{openFaqIndex === i ? '−' : '＋'}</span>
+						</button>
+						{#if openFaqIndex === i}
+							<div class="faq-item__body">
+								<p class="faq-item__answer">{faq.a}</p>
+							</div>
+						{/if}
+					</div>
+				{/each}
+			</div>
+		</div>
+	</section>
+
+	<!-- Call to Action Banner -->
+	<section class="cta-banner">
+		<div class="cta-banner__glow"></div>
+		<div class="container">
+			<h2 class="cta-banner__title">Comienza a ahorrar tiempo hoy mismo</h2>
+			<p class="cta-banner__sub">Regístrate y experimenta la tranquilidad de tener todas tus facturas y presupuestos organizados automáticamente.</p>
+			<a href={resolve('/login?mode=register')} class="btn btn--accent btn--large">Crear Mi Cuenta Gratis</a>
+		</div>
+	</section>
+
+	<!-- Technology Footer -->
+	<footer class="footer">
+		<div class="container footer__inner">
+			<div class="footer__brand">
+				<span class="footer__logo">LensLedger</span>
+				<p class="footer__tagline">Organización financiera simplificada con inteligencia artificial.</p>
+			</div>
+			
+			<div class="footer__tech">
+				<span class="footer__tech-title">Tecnología Sólida Detrás:</span>
+				<div class="footer__tech-badges">
+					{#each BADGES as badge (badge.label)}
+						<span class="badge badge--{badge.modifier}">{badge.label}</span>
+					{/each}
+				</div>
+			</div>
+		</div>
+		<div class="footer__bottom">
+			<div class="container footer__bottom-inner">
+				<p class="footer__copy">© 2026 LensLedger. Todos los derechos reservados.</p>
+				<div class="footer__links">
+					<a href="#hero">Inicio</a>
+					<a href="#features">Características</a>
+					<a href={resolve('/login?mode=login')}>Acceso</a>
+				</div>
+			</div>
+		</div>
+	</footer>
 </div>
-
-<style lang="scss">
-    $font-serif: 'DM Serif Display', serif;
-    $font-mono: 'DM Mono', monospace;
-    $font-sans: 'Instrument Sans', sans-serif;
-
-    $color-bg: #0b0d0f;
-    $color-bg2: #111316;
-    $color-surface: #1e2126;
-    $color-border: #2a2e35;
-    $color-border2: #353b44;
-    
-    $color-muted: #5a6170;
-    $color-subtle: #8b95a3;
-    $color-body: #c8d0da;
-    $color-heading: #eef1f5;
-    
-    $color-accent: #4ade80;
-    $color-cyan: #22d3ee;
-    $color-amber: #f59e0b;
-    $color-go: #00acd7;
-    $color-python: #3b82f6;
-    $color-svelte: #ff3e00;
-    $color-pg: #60a5fa;
-    $color-redis: #fca5a5;
-
-    @keyframes fadeUp {
-        from { opacity: 0; transform: translateY(1.25rem); }
-        to { opacity: 1; transform: translateY(0); }
-    }
-
-    /* ── BASE & LAYOUT ── */
-    .landing-layout {
-        background-color: $color-bg;
-        color: $color-body;
-        font-family: $font-sans;
-        min-height: 100vh;
-        position: relative;
-        overflow-x: hidden;
-
-        &::before {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-            opacity: 0.025;
-            pointer-events: none;
-            z-index: 9999;
-        }
-
-        &::after {
-            content: '';
-            position: fixed;
-            inset: 0;
-            background-image:
-                linear-gradient($color-border 0.0625rem, transparent 0.0625rem),
-                linear-gradient(90deg, $color-border 0.0625rem, transparent 0.0625rem);
-            background-size: 5rem 5rem;
-            opacity: 0.15;
-            pointer-events: none;
-            z-index: 0;
-        }
-    }
-
-    .container {
-        max-width: 68.75rem;
-        margin: 0 auto;
-        padding: 0 1.5rem;
-        position: relative;
-        z-index: 1;
-
-        @media (min-width: 48rem) {
-            padding: 0 2rem;
-        }
-    }
-
-    /* ── TYPOGRAPHY GLOBALS ── */
-    .section-label {
-        font-family: $font-mono;
-        font-size: 0.7rem;
-        color: $color-muted;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        margin-bottom: 0.75rem;
-    }
-
-    .section-title {
-        font-family: $font-serif;
-        font-size: clamp(2rem, 4vw, 2.8rem);
-        color: $color-heading;
-        line-height: 1.15;
-        margin: 0 0 1rem 0;
-        letter-spacing: -0.02em;
-    }
-
-    /* ── NAVIGATION ── */
-    .nav {
-        position: sticky;
-        top: 0;
-        z-index: 100;
-        background: rgba(11, 13, 15, 0.88);
-        backdrop-filter: blur(1rem);
-        border-bottom: 0.0625rem solid $color-border;
-        padding: 0.75rem 0;
-
-        &__inner {
-            max-width: 68.75rem;
-            margin: 0 auto;
-            padding: 0 2rem;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-        }
-
-        &__logo {
-            font-family: $font-serif;
-            font-size: 1.25rem;
-            color: $color-heading;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-
-            &-dot {
-                display: inline-block;
-                width: 0.5rem;
-                height: 0.5rem;
-                background: $color-accent;
-                border-radius: 50%;
-            }
-        }
-
-        &__link {
-            color: $color-subtle;
-            text-decoration: none;
-            font-size: 0.8rem;
-            font-family: $font-mono;
-            padding: 0.35rem 0.75rem;
-            border-radius: 0.25rem;
-            transition: all 0.2s ease;
-
-            &:hover, &:focus-visible {
-                color: $color-heading;
-                background: $color-surface;
-                outline: none;
-            }
-        }
-    }
-
-    .hero {
-        padding: 5rem 0;
-        position: relative;
-        overflow: hidden;
-
-        @media (min-width: 48rem) {
-            padding: 7rem 0 6rem;
-        }
-
-        &__glow {
-            position: absolute;
-            width: 37.5rem;
-            height: 37.5rem;
-            border-radius: 50%;
-            background: radial-gradient(circle, rgba(74, 222, 128, 0.06) 0%, transparent 70%);
-            top: -6.25rem;
-            right: -9.375rem;
-            pointer-events: none;
-            z-index: 0;
-        }
-
-        &__eyebrow {
-            font-family: $font-mono;
-            font-size: 0.72rem;
-            color: $color-accent;
-            letter-spacing: 0.15em;
-            text-transform: uppercase;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 0.75rem;
-            animation: fadeUp 0.5s ease both;
-
-            &::before {
-                content: '';
-                display: inline-block;
-                width: 2rem;
-                height: 0.0625rem;
-                background: $color-accent;
-            }
-        }
-
-        &__title {
-            font-family: $font-serif;
-            font-size: clamp(3.5rem, 8vw, 6.5rem);
-            color: $color-heading;
-            letter-spacing: -0.02em;
-            margin: 0 0 1.5rem 0;
-            line-height: 1;
-            animation: fadeUp 0.5s ease 0.1s both;
-
-            &-emphasis {
-                font-style: italic;
-                color: $color-accent;
-            }
-        }
-
-        &__sub {
-            font-size: 1.15rem;
-            color: $color-subtle;
-            max-width: 36.25rem;
-            margin: 0 0 3rem 0;
-            line-height: 1.8;
-            animation: fadeUp 0.5s ease 0.2s both;
-        }
-
-        &__badges {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 0.5rem;
-            margin: 0 0 3rem 0;
-            padding: 0;
-            list-style: none;
-            animation: fadeUp 0.5s ease 0.3s both;
-        }
-
-        &__metrics {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 0.0625rem;
-            background: $color-border;
-            border: 0.0625rem solid $color-border;
-            border-radius: 0.5rem;
-            overflow: hidden;
-            max-width: 37.5rem;
-            animation: fadeUp 0.5s ease 0.4s both;
-
-            @media (min-width: 48rem) {
-                grid-template-columns: repeat(4, 1fr);
-            }
-        }
-
-        &__actions {
-            margin: 0 0 3rem 0;
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            flex-wrap: wrap;
-            animation: fadeUp 0.5s ease 0.35s both;
-
-            &-text {
-                font-size: 0.875rem;
-                color: $color-muted;
-                max-width: 20rem;
-                margin: 0;
-            }
-        }
-
-        &__button {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 0.25rem;
-            border: 0.0625rem solid $color-accent;
-            background: rgba(74, 222, 128, 0.1);
-            padding: 0.75rem 1.25rem;
-            font-family: $font-mono;
-            font-size: 0.75rem;
-            letter-spacing: 0.24em;
-            color: $color-accent;
-            text-transform: uppercase;
-            text-decoration: none;
-            transition: all 0.2s ease;
-            cursor: pointer;
-
-            &:hover, &:focus-visible {
-                background: rgba(74, 222, 128, 0.2);
-                transform: translateY(-0.125rem);
-            }
-            
-            &:active {
-                transform: translateY(0);
-            }
-        }
-    }
-
-    .metric {
-        background: $color-bg2;
-        padding: 1.25rem 1.5rem;
-
-        &__val {
-            font-family: $font-serif;
-            font-size: 1.8rem;
-            color: $color-heading;
-            line-height: 1;
-        }
-
-        &__label {
-            font-family: $font-mono;
-            font-size: 0.68rem;
-            color: $color-muted;
-            text-transform: uppercase;
-            letter-spacing: 0.08em;
-            margin-top: 0.3rem;
-        }
-    }
-
-    .badge {
-        display: inline-flex;
-        align-items: center;
-        gap: 0.4rem;
-        padding: 0.3rem 0.8rem;
-        border-radius: 0.25rem;
-        font-family: $font-mono;
-        font-size: 0.75rem;
-        font-weight: 500;
-        border: 0.0625rem solid;
-
-        &--go { background: rgba($color-go, 0.1); color: $color-go; border-color: rgba($color-go, 0.3); }
-        &--svelte { background: rgba($color-svelte, 0.1); color: $color-svelte; border-color: rgba($color-svelte, 0.3); }
-        &--python { background: rgba($color-python, 0.1); color: $color-python; border-color: rgba($color-python, 0.3); }
-        &--pg { background: rgba(51, 103, 145, 0.1); color: $color-pg; border-color: rgba(51, 103, 145, 0.3); }
-        &--redis { background: rgba(220, 56, 45, 0.1); color: $color-redis; border-color: rgba(220, 56, 45, 0.3); }
-        &--green { background: rgba($color-accent, 0.1); color: $color-accent; border-color: rgba($color-accent, 0.3); }
-        &--cyan { background: rgba($color-cyan, 0.1); color: $color-cyan; border-color: rgba($color-cyan, 0.3); }
-        &--amber { background: rgba($color-amber, 0.1); color: $color-amber; border-color: rgba($color-amber, 0.3); }
-    }
-
-    .pitch {
-        padding: 5rem 0;
-        position: relative;
-        z-index: 1;
-
-        &__grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 2rem;
-
-            @media (min-width: 64rem) {
-                grid-template-columns: 1fr 1fr;
-            }
-        }
-
-        &__text {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-        }
-
-        &__desc {
-            color: $color-subtle;
-            font-size: 1.05rem;
-            line-height: 1.8;
-            margin: 0;
-
-            &--subtle {
-                font-size: 0.9rem;
-            }
-        }
-
-        &__cards {
-            display: flex;
-            flex-direction: column;
-            gap: 1rem;
-        }
-    }
-
-    .card {
-        background: $color-bg2;
-        border: 0.0625rem solid $color-border;
-        border-radius: 0.625rem;
-        padding: 1.5rem;
-        transition: border-color 0.2s, transform 0.2s;
-
-        &:hover {
-            border-color: $color-border2;
-            transform: translateY(-0.125rem);
-        }
-
-        &__title {
-            font-family: $font-serif;
-            font-size: 1.1rem;
-            color: $color-heading;
-            margin: 0 0 0.5rem 0;
-        }
-
-        &__body {
-            color: $color-subtle;
-            font-size: 0.9rem;
-            line-height: 1.75;
-            margin: 0;
-        }
-    }
-</style>

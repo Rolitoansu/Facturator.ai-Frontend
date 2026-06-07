@@ -1,0 +1,145 @@
+@keyframes spin {
+	100% {
+		transform: rotate(360deg);
+	}
+}
+
+.receipt-card {
+	container-type: inline-size;
+	border-radius: 0.5rem;
+	border: 0.0625rem solid $color-border;
+	background-color: $color-surface;
+	padding: 1rem;
+	color: $color-body;
+	display: flex;
+	flex-direction: column;
+
+	&__header {
+		display: flex;
+		align-items: flex-start;
+		justify-content: space-between;
+		gap: 1rem;
+	}
+
+	&__info {
+		min-width: 0;
+		display: flex;
+		flex-direction: column;
+		flex: 1;
+	}
+
+	&__eyebrow {
+		margin: 0;
+		font-family: $font-mono;
+		font-size: 0.62rem;
+		letter-spacing: 0.32em;
+		color: $color-subtle;
+		text-transform: uppercase;
+	}
+
+	&__merchant {
+		margin: 0.25rem 0 0 0;
+		font-size: 1rem;
+		font-weight: 600;
+		color: $color-heading;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__id {
+		margin: 0.25rem 0 0 0;
+		font-family: $font-mono;
+		font-size: 0.7rem;
+		color: $color-muted;
+	}
+
+	&__details {
+		margin-top: 1rem;
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+
+		@container (min-width: 18rem) {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+}
+
+.status-badge {
+	display: inline-flex;
+	align-items: center;
+	gap: 0.5rem;
+	border-radius: 999rem;
+	border: 0.0625rem solid transparent;
+	padding: 0.25rem 0.5rem;
+	font-family: $font-mono;
+	font-size: 0.55rem;
+	letter-spacing: 0.2em;
+	text-transform: uppercase;
+	white-space: nowrap;
+	flex-shrink: 0;
+	transition: all 0.2s ease;
+
+	@container (min-width: 18rem) {
+		padding: 0.25rem 0.75rem;
+		font-size: 0.62rem;
+		letter-spacing: 0.28em;
+	}
+
+	&__icon {
+		width: 0.875rem;
+		height: 0.875rem;
+
+		&--spin {
+			animation: spin 1s linear infinite;
+		}
+	}
+
+	&--pending {
+		background-color: $color-border2;
+		border-color: $color-muted;
+		color: $color-body;
+	}
+
+	&--processing {
+		background-color: rgba($color-warning, 0.1);
+		border-color: rgba($color-warning, 0.4);
+		color: $color-warning;
+	}
+
+	&--done {
+		background-color: rgba($color-success, 0.1);
+		border-color: rgba($color-success, 0.4);
+		color: $color-success;
+	}
+
+	&--error {
+		background-color: rgba($color-error, 0.1);
+		border-color: rgba($color-error, 0.4);
+		color: $color-error;
+	}
+}
+
+.detail-box {
+	border-radius: 0.375rem;
+	border: 0.0625rem solid $color-border;
+	background-color: $color-bg2;
+	padding: 0.5rem 0.75rem;
+
+	&__label {
+		margin: 0;
+		font-family: $font-mono;
+		font-size: 0.6rem;
+		letter-spacing: 0.28em;
+		color: $color-subtle;
+		text-transform: uppercase;
+	}
+
+	&__value {
+		margin: 0.25rem 0 0 0;
+		font-family: $font-mono;
+		font-size: 0.875rem;
+		color: $color-heading;
+	}
+}

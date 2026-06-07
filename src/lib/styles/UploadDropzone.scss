@@ -1,0 +1,146 @@
+.upload-section {
+	display: flex;
+	flex-direction: column;
+	gap: 1rem;
+}
+
+.dropzone {
+	position: relative;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: center;
+	gap: 0.75rem;
+	border-radius: 0.75rem;
+	border: 0.0625rem dashed $color-border;
+	background-color: $color-bg2;
+	padding: 2.5rem 1.5rem;
+	text-align: center;
+	color: $color-subtle;
+	transition: all 0.2s ease;
+	cursor: pointer;
+
+	&--active {
+		border-color: $color-accent;
+		background-color: rgba($color-accent, 0.1);
+		color: $color-accent;
+	}
+
+	&--busy {
+		border-color: $color-border2;
+		background-color: $color-surface;
+		color: $color-muted;
+		cursor: wait;
+	}
+
+	&__input {
+		display: none;
+	}
+
+	&__icon-wrap {
+		display: flex;
+		height: 3rem;
+		width: 3rem;
+		align-items: center;
+		justify-content: center;
+		border-radius: 50%;
+		border: 0.0625rem solid $color-border;
+	}
+
+	&__icon {
+		height: 1.5rem;
+		width: 1.5rem;
+	}
+
+	&__text-wrap {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+	}
+
+	&__title {
+		margin: 0;
+		font-size: 0.875rem;
+		font-weight: 500;
+		color: $color-heading;
+	}
+
+	&__subtitle {
+		margin: 0;
+		font-size: 0.75rem;
+	}
+
+	&__btn {
+		border-radius: 9999px;
+		border: 0.0625rem solid $color-border;
+		background-color: $color-surface;
+		padding: 0.5rem 1rem;
+		font-family: $font-mono;
+		font-size: 0.75rem;
+		letter-spacing: 0.24em;
+		color: $color-body;
+		text-transform: uppercase;
+		transition: all 0.2s ease;
+
+		.dropzone:hover:not(.dropzone--busy) & {
+			border-color: $color-accent;
+			color: $color-accent;
+		}
+	}
+
+	&__filename {
+		margin: 0;
+		font-family: $font-mono;
+		font-size: 0.75rem;
+		color: $color-body;
+	}
+}
+
+.preview {
+	overflow: hidden;
+	border-radius: 0.5rem;
+	border: 0.0625rem solid $color-border;
+	background-color: $color-bg;
+
+	&__img {
+		height: 12rem;
+		width: 100%;
+		object-fit: cover;
+		display: block;
+	}
+}
+
+.error-msg {
+	margin: 0;
+	font-family: $font-mono;
+	font-size: 0.75rem;
+	color: $color-error;
+}
+
+.submit-btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	border-radius: 0.5rem;
+	border: 0.0625rem solid $color-accent;
+	background-color: rgba($color-accent, 0.1);
+	padding: 0.5rem 1rem;
+	font-family: $font-mono;
+	font-size: 0.75rem;
+	letter-spacing: 0.24em;
+	text-transform: uppercase;
+	color: $color-accent;
+	transition: all 0.2s ease;
+	cursor: pointer;
+
+	&:hover:not(&--disabled) {
+		background-color: rgba($color-accent, 0.2);
+	}
+
+	&--disabled {
+		cursor: not-allowed;
+		border-color: $color-border;
+		background-color: $color-bg2;
+		color: $color-muted;
+	}
+}

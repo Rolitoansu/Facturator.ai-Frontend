@@ -1,1 +1,4 @@
-// place files you want to import through the `$lib` alias in this folder.
+// Barrel principal de $lib — re-exporta todas las capas modulares
+export * from './types';
+export * from './constants';
+export * from './utils';

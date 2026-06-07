@@ -1,0 +1,60 @@
+.chart-card {
+	border-radius: 0.5rem;
+	border: 0.0625rem solid $color-border;
+	background-color: $color-bg3;
+	padding: 1.5rem;
+}
+
+.chart {
+	display: flex;
+	align-items: flex-end;
+	gap: 0.5rem;
+	height: 7.5rem;
+
+	&__column {
+		flex: 1;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: flex-end;
+		gap: 0.5rem;
+	}
+
+	&__track {
+		width: 100%;
+		height: 100%;
+		display: flex;
+		align-items: flex-end;
+	}
+
+	&__bar {
+		width: 100%;
+		min-height: 0.25rem;
+		border-radius: 0.1875rem 0.1875rem 0 0;
+		opacity: 0.8;
+		transition:
+			height 0.3s ease,
+			opacity 0.2s ease;
+		cursor: pointer;
+
+		&:hover,
+		&:focus-visible {
+			opacity: 1;
+			outline: none;
+		}
+	}
+
+	&__label {
+		font-family: $font-mono;
+		font-size: 0.6rem;
+		letter-spacing: 0.08em;
+		color: $color-muted;
+		text-transform: uppercase;
+		text-align: center;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+		max-width: 100%;
+	}
+}

@@ -1,0 +1,221 @@
+// Estilos de la página Dashboard (/app/dashboard)
+
+.dashboard {
+	color: $color-body;
+
+	&__wrap {
+		margin: 0 auto;
+		display: flex;
+		width: 100%;
+		max-width: $max-width-app;
+		flex-direction: column;
+		gap: 1.25rem;
+	}
+
+	.header {
+		display: flex;
+		flex-direction: column;
+		gap: 0.25rem;
+
+		@media (min-width: $bp-md) {
+			gap: 0.5rem;
+		}
+
+		&__eyebrow {
+			font-family: $font-mono;
+			font-size: 0.65rem;
+			letter-spacing: 0.36em;
+			color: $color-muted;
+			text-transform: uppercase;
+			margin: 0;
+
+			@media (min-width: $bp-md) {
+				font-size: 0.7rem;
+			}
+		}
+
+		&__title {
+			font-family: $font-serif;
+			font-size: 1.5rem;
+			color: $color-heading;
+			margin: 0;
+
+			@media (min-width: $bp-md) {
+				font-size: 1.875rem;
+			}
+		}
+
+		&__sub {
+			font-size: 0.8rem;
+			color: $color-subtle;
+			margin: 0;
+
+			@media (min-width: $bp-md) {
+				font-size: 0.875rem;
+			}
+		}
+	}
+
+	.dashboard-layout {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 1.25rem;
+
+		@media (min-width: $bp-md) {
+			gap: 1.5rem;
+		}
+
+		@media (min-width: $bp-xl) {
+			grid-template-columns: minmax(0, 2.1fr) minmax(0, 1fr);
+		}
+
+		&__content {
+			display: flex;
+			flex-direction: column;
+			gap: 1.25rem;
+
+			@media (min-width: $bp-md) {
+				gap: 1.5rem;
+			}
+		}
+	}
+
+	.metrics {
+		display: grid;
+		grid-template-columns: 1fr;
+		gap: 0.75rem;
+
+		@media (min-width: $bp-md) {
+			grid-template-columns: repeat(3, 1fr);
+			gap: 1rem;
+		}
+	}
+
+	.metric {
+		border-radius: 0.5rem;
+		border: 0.0625rem solid $color-border;
+		background-color: $color-surface;
+		padding: 0.75rem 1rem;
+
+		&__label {
+			font-family: $font-mono;
+			font-size: 0.62rem;
+			letter-spacing: 0.28em;
+			color: $color-subtle;
+			text-transform: uppercase;
+			margin: 0;
+		}
+
+		&__val {
+			margin: 0.5rem 0 0 0;
+			font-family: $font-serif;
+			font-size: 1.25rem;
+			color: $color-heading;
+
+			@media (min-width: $bp-md) {
+				font-size: 1.5rem;
+			}
+
+			&--success {
+				color: $color-success;
+			}
+		}
+	}
+
+	.panel {
+		border-radius: 0.5rem;
+		border: 0.0625rem solid $color-border;
+		background-color: $color-surface;
+		padding: 1rem;
+
+		@media (min-width: $bp-md) {
+			padding: 1.5rem;
+		}
+
+		&__title {
+			margin: 0 0 1rem 0;
+			font-size: 0.875rem;
+			font-weight: 600;
+			color: $color-heading;
+		}
+
+		&__grid {
+			display: grid;
+			grid-template-columns: 1fr;
+			gap: 0.75rem;
+
+			@media (min-width: $bp-md) {
+				grid-template-columns: repeat(2, 1fr);
+			}
+		}
+	}
+
+	.sidebar-panel {
+		border-radius: 0.5rem;
+		border: 0.0625rem solid $color-border;
+		background-color: $color-bg2;
+		padding: 1rem;
+
+		&__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		&__title {
+			margin: 0;
+			font-size: 0.875rem;
+			font-weight: 600;
+			color: $color-heading;
+		}
+
+		&__count {
+			font-family: $font-mono;
+			font-size: 0.6rem;
+			letter-spacing: 0.3em;
+			color: $color-muted;
+			text-transform: uppercase;
+		}
+	}
+
+	.receipts {
+		margin-top: 1rem;
+		display: flex;
+		flex-direction: column;
+		gap: 0.75rem;
+	}
+
+	.receipt {
+		display: flex;
+		flex-direction: column;
+		gap: 0.5rem;
+
+		&__header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+		}
+
+		&__date {
+			font-family: $font-mono;
+			font-size: 0.6rem;
+			letter-spacing: 0.28em;
+			color: $color-muted;
+			text-transform: uppercase;
+		}
+	}
+
+	.message {
+		border-radius: 0.5rem;
+		border: 0.0625rem solid $color-border;
+		background-color: $color-surface;
+		padding: 1.5rem 1rem;
+		font-size: 0.75rem;
+		color: $color-subtle;
+
+		&--error {
+			font-family: $font-mono;
+			color: $color-error;
+		}
+	}
+}

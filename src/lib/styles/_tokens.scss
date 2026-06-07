@@ -1,0 +1,66 @@
+// ─── TYPOGRAPHY ───────────────────────────────────────────────────────────────
+$font-serif: 'DM Serif Display', serif;
+$font-mono: 'DM Mono', monospace;
+$font-sans: 'Instrument Sans', sans-serif;
+
+// ─── COLORS: BACKGROUNDS ──────────────────────────────────────────────────────
+$color-bg: var(--color-bg);
+$color-bg2: var(--color-bg2);
+$color-bg3: var(--color-bg3);
+$color-surface: var(--color-surface);
+
+// ─── COLORS: BORDERS ──────────────────────────────────────────────────────────
+$color-border: var(--color-border);
+$color-border2: var(--color-border2);
+
+// ─── COLORS: TEXT ─────────────────────────────────────────────────────────────
+$color-heading: var(--color-heading);
+$color-body: var(--color-body);
+$color-subtle: var(--color-subtle);
+$color-muted: var(--color-muted);
+
+// ─── COLORS: ACCENT ───────────────────────────────────────────────────────────
+$color-accent: #4ade80; // green
+$color-cyan: #22d3ee;
+$color-amber: #f59e0b;
+
+// ─── COLORS: STATUS ───────────────────────────────────────────────────────────
+$color-success: #4ade80;
+$color-warning: #f59e0b;
+$color-danger: #f87171;
+$color-error: #f87171;
+
+// ─── COLORS: TECH BADGES ──────────────────────────────────────────────────────
+$color-go: #00acd7;
+$color-python: #3b82f6;
+$color-svelte: #ff3e00;
+$color-pg: #60a5fa;
+$color-redis: #fca5a5;
+
+// ─── CATEGORY COLORS ──────────────────────────────────────────────────────────
+$category-colors: (
+	'alimentacion': #4ade80,
+	'transporte': #22d3ee,
+	'ropa': #f87171,
+	'ocio': #f59e0b,
+	'salud': #60a5fa,
+	'hogar': #a78bfa,
+	'suscripciones': #ff3e00
+);
+
+// ─── ALPHA HELPERS ────────────────────────────────────────────────────────────
+$color-accent-alpha: rgba(74, 222, 128, 0.08);
+$color-accent-border: rgba(74, 222, 128, 0.2);
+$color-cyan-alpha: rgba(34, 211, 238, 0.3);
+$color-blur-bg: var(--color-blur-bg);
+
+// ─── LAYOUT ───────────────────────────────────────────────────────────────────
+$max-width-app: 72rem;
+$max-width-narrow: 64rem;
+$max-width-content: 68.75rem;
+
+// ─── BREAKPOINTS ──────────────────────────────────────────────────────────────
+$bp-sm: 30rem; // 480px
+$bp-md: 48rem; // 768px
+$bp-lg: 64rem; // 1024px
+$bp-xl: 80rem; // 1280px

@@ -1,6 +1,10 @@
-import { ReceiptStatus, type Budget, type Receipt, type Transaction } from '$lib/api';
+import { ReceiptStatus } from '$lib/types/api.types';
+import type { Budget, Receipt, Transaction } from '$lib/types/api.types';
+import { MONTH_LABEL } from '$lib/constants/app';
+import { receiptStatusLabel } from '$lib/constants/receipt-status';
 
-export const MONTH_LABEL = 'Mayo 2026';
+// Re-exportamos MONTH_LABEL para mantener compatibilidad con imports existentes
+export { MONTH_LABEL, receiptStatusLabel };
 
 export const mockChartData = [
 	{ label: 'Nov', value: 980, color: 'rgba(255,62,0,0.7)' },
@@ -134,16 +138,3 @@ export const mockDashboardCategories = [
 	{ cat: 'salud', pct: 8, amt: '€103', color: 'rgba(167,139,250,0.7)' },
 	{ cat: 'otros', pct: 5, amt: '€65', color: 'rgba(90,97,112,0.7)' }
 ];
-
-export const receiptStatusLabel = (status: ReceiptStatus) => {
-	switch (status) {
-		case ReceiptStatus.Pending:
-			return 'pending';
-		case ReceiptStatus.Processing:
-			return 'processing';
-		case ReceiptStatus.Done:
-			return 'done';
-		case ReceiptStatus.Error:
-			return 'error';
-	}
-};

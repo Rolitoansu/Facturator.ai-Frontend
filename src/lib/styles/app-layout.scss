@@ -1,0 +1,461 @@
+// ─── APP LAYOUT ───────────────────────────────────────────────────────────────
+@keyframes pulse {
+	0% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.7);
+	}
+	70% {
+		transform: scale(1);
+		box-shadow: 0 0 0 0.375rem rgba(74, 222, 128, 0);
+	}
+	100% {
+		transform: scale(0.95);
+		box-shadow: 0 0 0 0 rgba(74, 222, 128, 0);
+	}
+}
+
+.layout {
+	display: flex;
+	height: 100dvh;
+	overflow: hidden;
+	position: relative;
+	z-index: 1;
+
+	&--locked {
+		overflow: hidden;
+		height: 100dvh;
+	}
+}
+
+.overlay {
+	position: fixed;
+	inset: 0;
+	background-color: rgba(0, 0, 0, 0.5);
+	backdrop-filter: blur(0.25rem);
+	z-index: 90;
+
+	@media (min-width: $bp-lg) {
+		display: none;
+	}
+}
+
+.sidebar {
+	position: fixed;
+	top: 0;
+	bottom: 0;
+	left: 0;
+	width: 16rem;
+	background: $color-bg2;
+	border-right: 0.0625rem solid $color-border;
+	display: flex;
+	flex-direction: column;
+	padding: 1.5rem 1rem;
+	z-index: 100;
+	transform: translateX(-100%);
+	transition: transform 0.3s ease;
+
+	&--open {
+		transform: translateX(0);
+	}
+
+	@media (min-width: $bp-lg) {
+		position: relative;
+		transform: translateX(0);
+		width: 13.75rem;
+		flex-shrink: 0;
+		z-index: 1;
+	}
+
+	&__brand {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		font-family: $font-serif;
+		font-size: 1.15rem;
+		color: $color-heading;
+		margin-bottom: 2.5rem;
+		padding-left: 0.5rem;
+		gap: 0.5rem;
+
+		@media (min-width: $bp-lg) {
+			padding-left: 0;
+		}
+	}
+}
+
+.close-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	color: $color-muted;
+	padding: 0.25rem;
+	cursor: pointer;
+
+	svg {
+		width: 1.25rem;
+		height: 1.25rem;
+	}
+
+	@media (min-width: $bp-lg) {
+		display: none;
+	}
+}
+
+.nav {
+	display: flex;
+	flex-direction: column;
+	gap: 0.2rem;
+	flex: 1;
+
+	&__link {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+		padding: 0.55rem 0.75rem;
+		border-radius: 0.375rem;
+		border: 0.0625rem solid transparent;
+		background: transparent;
+		color: $color-muted;
+		font-size: 0.85rem;
+		font-weight: 400;
+		transition: all 0.15s ease;
+		text-decoration: none;
+
+		&:hover {
+			color: $color-heading;
+			background: rgba(255, 255, 255, 0.03);
+		}
+
+		&--active {
+			border-color: rgba($color-accent, 0.2);
+			background: rgba($color-accent, 0.08);
+			color: $color-accent;
+			font-weight: 600;
+
+			&:hover {
+				background: rgba($color-accent, 0.08);
+				color: $color-accent;
+			}
+		}
+	}
+
+	&__icon {
+		font-family: monospace;
+		font-size: 0.9rem;
+		opacity: 0.8;
+	}
+}
+
+.user-container {
+	position: relative;
+	border-top: 0.0625rem solid $color-border;
+	padding-top: 1rem;
+	margin-top: 1rem;
+}
+
+.user {
+	width: 100%;
+	box-sizing: border-box;
+	background: transparent;
+	border: none;
+	padding: 0.5rem;
+	margin: 0;
+	display: flex;
+	align-items: center;
+	gap: 0.75rem;
+	text-align: left;
+	cursor: pointer;
+	border-radius: 0.5rem;
+	transition: background-color 0.2s ease;
+
+	&:hover,
+	&:focus-visible {
+		background-color: rgba(255, 255, 255, 0.03);
+		outline: none;
+	}
+
+	&__avatar {
+		width: 2rem;
+		height: 2rem;
+		border-radius: 50%;
+		background: linear-gradient(135deg, rgba(74, 222, 128, 0.3), $color-cyan-alpha);
+		border: 0.0625rem solid $color-border2;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		font-size: 0.8rem;
+		color: $color-accent;
+		font-weight: 700;
+		font-family: $font-mono;
+		flex-shrink: 0;
+	}
+
+	&__info {
+		flex: 1;
+		min-width: 0;
+	}
+
+	&__name {
+		font-size: 0.8rem;
+		color: $color-heading;
+		font-weight: 600;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__email {
+		font-family: $font-mono;
+		font-size: 0.65rem;
+		color: $color-muted;
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+
+	&__chevron {
+		width: 0.875rem;
+		height: 0.875rem;
+		color: $color-muted;
+		transition: transform 0.2s ease;
+		flex-shrink: 0;
+
+		&--open {
+			transform: rotate(180deg);
+		}
+	}
+}
+
+.user-menu {
+	position: absolute;
+	bottom: 3.5rem;
+	left: 0;
+	right: 0;
+	background: color-mix(in srgb, var(--color-bg2) 95%, transparent);
+	backdrop-filter: blur(0.75rem);
+	border: 0.0625rem solid $color-border;
+	border-radius: 0.5rem;
+	padding: 0.35rem;
+	display: flex;
+	flex-direction: column;
+	gap: 0.15rem;
+	box-shadow: 0 0.5rem 1.5rem rgba(0, 0, 0, 0.5);
+	z-index: 110;
+	animation: slideUp 0.15s cubic-bezier(0.16, 1, 0.3, 1);
+
+	&__form {
+		display: block;
+		width: 100%;
+		margin: 0;
+		padding: 0;
+	}
+
+	&__item {
+		display: flex;
+		align-items: center;
+		gap: 0.625rem;
+		width: 100%;
+		box-sizing: border-box;
+		background: transparent;
+		border: none;
+		border-radius: 0.375rem;
+		padding: 0.5rem 0.75rem;
+		color: $color-body;
+		font-size: 0.8rem;
+		text-align: left;
+		text-decoration: none;
+		cursor: pointer;
+		transition: all 0.15s ease;
+
+		&:hover,
+		&:focus-visible {
+			background-color: rgba(255, 255, 255, 0.04);
+			color: $color-heading;
+			outline: none;
+		}
+
+		&--logout {
+			color: $color-danger;
+
+			&:hover,
+			&:focus-visible {
+				background-color: rgba($color-danger, 0.08);
+				color: $color-danger;
+			}
+		}
+	}
+
+	&__icon {
+		font-size: 0.9rem;
+	}
+}
+
+@keyframes slideUp {
+	from {
+		opacity: 0;
+		transform: translateY(0.25rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+.main {
+	flex: 1;
+	overflow: hidden;
+	display: flex;
+	flex-direction: column;
+	width: 100%;
+}
+
+.topbar {
+	background: $color-blur-bg;
+	backdrop-filter: blur(0.75rem);
+	border-bottom: 0.0625rem solid $color-border;
+	padding: 0.75rem 1rem;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	position: sticky;
+	top: 0;
+	z-index: 10;
+	flex-shrink: 0;
+
+	@media (min-width: $bp-lg) {
+		padding: 0.75rem 1.75rem;
+	}
+
+	&__left {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+	}
+
+	&__path {
+		font-family: $font-mono;
+		font-size: 0.72rem;
+		color: $color-muted;
+		display: none;
+
+		@media (min-width: $bp-sm) {
+			display: block;
+		}
+	}
+
+	&__actions {
+		display: flex;
+		align-items: center;
+		gap: 0.75rem;
+
+		@media (min-width: $bp-lg) {
+			gap: 1rem;
+		}
+	}
+}
+
+.menu-btn {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: transparent;
+	border: none;
+	color: $color-heading;
+	padding: 0.25rem;
+	cursor: pointer;
+
+	svg {
+		width: 1.5rem;
+		height: 1.5rem;
+	}
+
+	@media (min-width: $bp-lg) {
+		display: none;
+	}
+}
+
+.ws-status {
+	display: flex;
+	align-items: center;
+	gap: 0.4rem;
+
+	&__dot {
+		width: 0.375rem;
+		height: 0.375rem;
+		border-radius: 50%;
+		background: $color-muted;
+
+		&--connected {
+			background: $color-accent;
+			animation: pulse 2s ease infinite;
+		}
+	}
+
+	&__label {
+		font-family: $font-mono;
+		font-size: 0.65rem;
+		color: $color-muted;
+	}
+}
+
+.month-badge {
+	font-family: $font-mono;
+	font-size: 0.72rem;
+	padding: 0.25rem 0.65rem;
+	border-radius: 0.25rem;
+	border: 0.0625rem solid $color-border2;
+	color: $color-subtle;
+	background: $color-surface;
+}
+
+.content {
+	flex: 1;
+	padding: 1.5rem 1rem;
+	overflow: auto;
+	background-color: $color-bg;
+
+	@media (min-width: $bp-md) {
+		padding: 2.5rem 1.5rem;
+	}
+	@media (min-width: $bp-lg) {
+		padding: 2.5rem 2rem;
+	}
+}
+
+.theme-toggle {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	background: $color-surface;
+	border: 0.0625rem solid $color-border2;
+	color: $color-heading;
+	width: 2rem;
+	height: 2rem;
+	border-radius: 0.375rem;
+	cursor: pointer;
+	transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+	padding: 0;
+
+	svg {
+		width: 1rem;
+		height: 1rem;
+		transition: transform 0.4s ease;
+	}
+
+	&:hover {
+		background: rgba(255, 255, 255, 0.05);
+		color: $color-accent;
+		border-color: rgba($color-accent, 0.3);
+
+		svg {
+			transform: rotate(15deg) scale(1.1);
+		}
+	}
+
+	&:focus-visible {
+		outline: none;
+		box-shadow: 0 0 0 0.125rem rgba($color-accent, 0.35);
+	}
+}

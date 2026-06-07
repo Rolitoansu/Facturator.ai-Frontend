@@ -1,0 +1,4 @@
+// Barrel de estilos — importar en vite.config.ts como additionalData
+// o usar @use en cada archivo .scss que los necesite
+@forward 'tokens';
+@forward 'animations';
