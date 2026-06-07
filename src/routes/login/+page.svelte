@@ -15,9 +15,6 @@
 	});
 
 	const switchTo = (next: 'login' | 'register') => (mode = next);
-
-	// Mensajes de error devueltos por las acciones del servidor
-	let { form } = $props();
 </script>
 
 <svelte:head>
