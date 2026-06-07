@@ -3,6 +3,8 @@
 	import { page } from '$app/state';
 	import '$lib/styles/login.scss';
 
+	let { form } = $props();
+
 	let mode = $state<'login' | 'register'>('login');
 
 	$effect(() => {
@@ -65,8 +67,13 @@
 
 				<button type="submit" class="btn btn--primary auth-form__submit"> Login </button>
 
+				{#if form?.message}
+					<p style="color: #ef4444; font-size: 0.8rem; margin-top: 0.5rem; text-align: center;">{form.message}</p>
+				{/if}
+
 				<p class="auth-form__hint">
 					Usa el formulario demo para establecer sesión y desbloquear rutas /app/*.
+					<br/>(Demo: <strong>admin@acme.com</strong> / <strong>password123</strong>)
 				</p>
 			</form>
 		{:else}
@@ -87,6 +94,10 @@
 				</label>
 
 				<button type="submit" class="btn btn--primary auth-form__submit"> Register </button>
+
+				{#if form?.message}
+					<p style="color: #ef4444; font-size: 0.8rem; margin-top: 0.5rem; text-align: center;">{form.message}</p>
+				{/if}
 
 				<p class="auth-form__hint">Registro demo con mejor-auth.</p>
 			</form>

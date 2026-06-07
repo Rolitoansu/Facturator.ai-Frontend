@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { User, Settings, Lock, CheckCircle2, Save } from 'lucide-svelte';
+	import { User, Settings, Lock, CircleCheck, Save } from 'lucide-svelte';
 	import '$lib/styles/profile.scss';
 
 	let { data } = $props();
@@ -108,7 +108,7 @@
 					</div>
 					<div class="details-form__actions">
 						{#if profileSaved}
-							<span class="status-msg status-msg--success"><CheckCircle2 size={16} /> Guardado con éxito</span>
+							<span class="status-msg status-msg--success"><CircleCheck size={16} /> Guardado con éxito</span>
 						{/if}
 						<button type="submit" class="btn btn--primary" disabled={isSavingProfile}>
 							{#if isSavingProfile} Guardando... {:else} <Save size={16} /> Guardar cambios {/if}
@@ -134,7 +134,7 @@
 					</div>
 					<div class="details-form__actions">
 						{#if passwordSaved}
-							<span class="status-msg status-msg--success"><CheckCircle2 size={16} /> Contraseña actualizada</span>
+							<span class="status-msg status-msg--success"><CircleCheck size={16} /> Contraseña actualizada</span>
 						{/if}
 						<button type="submit" class="btn btn--secondary" disabled={isSavingPassword || !currentPassword || !newPassword}>
 							{#if isSavingPassword} Actualizando... {:else} <Lock size={16} /> Cambiar contraseña {/if}
@@ -171,7 +171,7 @@
 					</div>
 					<div class="details-form__actions">
 						{#if prefsSaved}
-							<span class="status-msg status-msg--success"><CheckCircle2 size={16} /> Preferencias guardadas</span>
+							<span class="status-msg status-msg--success"><CircleCheck size={16} /> Preferencias guardadas</span>
 						{/if}
 						<button type="submit" class="btn btn--secondary" disabled={isSavingPrefs}>
 							{#if isSavingPrefs} Guardando... {:else} <Save size={16} /> Guardar preferencias {/if}
