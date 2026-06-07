@@ -61,8 +61,12 @@
     .budget-page {
         min-height: 100vh;
         background-color: $color-bg-main;
-        padding: 2.5rem 1.5rem;
+        padding: 1.5rem 1rem;
         color: $color-text-main;
+
+        @media (min-width: 48rem) {
+            padding: 2.5rem 1.5rem;
+        }
 
         &__wrap {
             margin: 0 auto;
@@ -90,9 +94,13 @@
 
         &__title {
             font-family: $font-serif;
-            font-size: 1.875rem;
+            font-size: 1.5rem;
             color: $color-text-light;
             margin: 0;
+
+            @media (min-width: 48rem) {
+                font-size: 1.875rem;
+            }
         }
 
         &__sub {
@@ -106,7 +114,11 @@
         border-radius: 0.75rem;
         border: 0.0625rem solid $color-border;
         background-color: $color-bg-card;
-        padding: 1.25rem;
+        padding: 1rem;
+
+        @media (min-width: 48rem) {
+            padding: 1.5rem;
+        }
 
         &__title {
             margin: 0 0 1rem 0;
@@ -122,6 +134,7 @@
 
             @media (min-width: 48rem) {
                 grid-template-columns: repeat(2, 1fr);
+                gap: 1rem;
             }
         }
     }

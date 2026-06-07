@@ -32,7 +32,7 @@
     });
 </script>
 
-<span class:badge--default={modifier === 'default'} class={`badge--${modifier}`}>
+<span class="badge badge--{modifier}">
     {label}
 </span>
 
@@ -56,17 +56,30 @@
     .badge {
         display: inline-flex;
         align-items: center;
+        justify-content: center;
         border-radius: 9999px;
-        border: 0.0625rem solid $color-border-default;
-        background-color: $color-bg-default;
-        padding: 0.25rem 0.625rem;
+        border: 0.0625rem solid transparent;
+        padding: 0.2rem 0.5rem;
         font-family: $font-mono;
-        font-size: 0.68rem;
+        font-size: 0.6rem;
         font-weight: 500;
-        color: $color-text-default;
         text-transform: uppercase;
-        letter-spacing: 0.14em;
+        letter-spacing: 0.1em;
         white-space: nowrap;
+        line-height: 1.2;
+        transition: all 0.2s ease;
+
+        @media (min-width: 48rem) {
+            padding: 0.25rem 0.625rem;
+            font-size: 0.65rem;
+            letter-spacing: 0.14em;
+        }
+
+        &--default {
+            background-color: $color-bg-default;
+            color: $color-text-default;
+            border-color: $color-border-default;
+        }
 
         @each $name, $color in $category-colors {
             &--#{$name} {

@@ -2,11 +2,24 @@
     --border: #2a2e35;
 }
 
+@font-face {
+    font-family: 'Instrument Sans';
+    src: url('/fonts/Instrument_Sans.ttf') format('truetype');
+    font-weight: 400;
+    font-style: swap;
+}
+
+@font-face {
+    font-family: 'DMSerifDisplay';
+    src: url('/fonts/DMSerifDisplay.ttf') format('truetype');
+    font-weight: 400;
+    font-style: swap;
+}
+
 body {
     background: #0b0d0f;
     color: #c8d0da;
-    font-family: 'Instrument Sans', sans-serif;
-
+    font-family: "Instrument Sans";
 }
 
 body::after {

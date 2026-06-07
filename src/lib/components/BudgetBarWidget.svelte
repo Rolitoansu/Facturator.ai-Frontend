@@ -1,7 +1,7 @@
 <script lang="ts">
     import CategoryBadge from '$lib/components/CategoryBadge.svelte';
 
-    interface Props {
+    export interface BudgetBarProps {
         cat: string;
         label: string;
         spent: number;
@@ -9,204 +9,266 @@
         month?: string;
     }
 
-    const { cat, label, spent, limit, month }: Props = $props();
+    const { cat, label, spent, limit, month = 'Mes actual' }: BudgetBarProps = $props();
 
-    const pct = $derived(limit > 0 ? spent / limit : 0);
-    const pctDisplay = $derived(Math.round(pct * 100));
-    const progressWidth = $derived(Math.min(pct * 100, 100));
-    
-    const isOver = $derived(spent > limit);
-    const isWarning = $derived(!isOver && pct >= 0.8);
-    const diffAmount = $derived(Math.abs(spent - limit).toFixed(2));
+    const stats = $derived.by(() => {
+        const pct = limit > 0 ? (spent / limit) : 0;
+        const isOver = spent > limit;
+        const diffAmount = Math.abs(spent - limit).toFixed(2);
+        
+        let statusModifier = 'success';
+        if (isOver) {
+            statusModifier = 'danger';
+        } else if (pct >= 0.8) {
+            statusModifier = 'warning';
+        }
+
+        return {
+            pctDisplay: Math.round(pct * 100),
+            progressWidth: Math.min(pct * 100, 100),
+            isOver,
+            isWarning: !isOver && pct >= 0.8,
+            diffAmount,
+            statusModifier
+        };
+    });
+
+    const formatCurrency = (val: number) => val.toFixed(2);
 </script>
 
-<article class="budget-widget" class:budget-widget--over={isOver}>
-    <header class="budget-widget__header">
-        <div class="budget-widget__info">
-            <CategoryBadge category={cat} />
-            <div class="budget-widget__text">
-                <p class="budget-widget__label">{label}</p>
-                {#if month}
-                    <p class="budget-widget__month">{month}</p>
-                {/if}
+<article class="budget-bar budget-bar--{stats.statusModifier}">
+    <header class="budget-bar__header">
+        
+        <div class="budget-bar__info">
+            <div class="budget-bar__badge-wrap">
+                <CategoryBadge category={cat} />
+            </div>
+            <div class="budget-bar__meta">
+                <h3 class="budget-bar__title" title={label}>{label}</h3>
+                <p class="budget-bar__month">{month}</p>
             </div>
         </div>
 
-        <div class="budget-widget__stats">
-            <p class="budget-widget__amounts">{spent.toFixed(2)} / {limit.toFixed(2)} EUR</p>
-            <p class="budget-widget__pct">{pctDisplay}% del límite</p>
+        <div class="budget-bar__stats">
+            <p class="budget-bar__amounts">
+                <span class="budget-bar__spent">{formatCurrency(spent)}</span>
+                <span class="budget-bar__limit">/ {formatCurrency(limit)} EUR</span>
+            </p>
+            <p class="budget-bar__pct">{stats.pctDisplay}% del límite</p>
         </div>
+        
     </header>
 
-    <div class="budget-widget__track" aria-label="budget progress">
-        <div
-            class="budget-widget__bar"
-            class:budget-widget__bar--over={isOver}
-            style="width: {progressWidth}%;"
+    <div class="budget-bar__track">
+        <div 
+            class="budget-bar__fill" 
+            style="width: {stats.progressWidth}%;"
         ></div>
     </div>
 
-    {#if isOver}
-        <div class="alert alert--danger">
-            <span class="alert__icon">🚨</span>
-            <span class="alert__text">
-                Superado por {diffAmount} EUR
-            </span>
+    {#if stats.isOver}
+        <div class="budget-bar__alert budget-bar__alert--danger">
+            <span class="budget-bar__alert-icon" aria-hidden="true">🚨</span>
+            Superado por {stats.diffAmount} EUR
         </div>
-    {:else if isWarning}
-        <div class="alert alert--warning">
-            <span class="alert__icon">⚠️</span>
-            <span class="alert__text">
-                Queda el {Math.max(0, 100 - pctDisplay)}% (alerta > 80%)
-            </span>
+    {:else if stats.isWarning}
+        <div class="budget-bar__alert budget-bar__alert--warning">
+            <span class="budget-bar__alert-icon" aria-hidden="true">⚠️</span>
+            Queda el {100 - stats.pctDisplay}% (alerta > 80%)
         </div>
     {/if}
 </article>
 
 <style lang="scss">
+    $font-serif: 'DM Serif Display', serif;
     $font-mono: 'DM Mono', monospace;
 
     $color-bg-card: #1e2126;
     $color-bg-track: #111316;
     $color-border: #2a2e35;
-
-    $color-text-main: #eef1f5;
+    
+    $color-text-main: #c8d0da;
+    $color-text-light: #eef1f5;
     $color-text-muted: #8b95a3;
-    $color-text-eyebrow: #5a6170;
+    $color-text-darker: #5a6170;
 
-    $color-success-border: rgba(74, 222, 128, 0.9);
-    $color-success-bar: rgba(74, 222, 128, 0.85);
+    $color-success: #4ade80;
+    $color-warning: #f59e0b;
+    $color-danger: #f87171;
 
-    $color-danger-main: #f87171;
-    $color-danger-border: rgba(248, 113, 113, 0.9);
-    $color-danger-bar: rgba(248, 113, 113, 0.85);
-    $color-danger-bg: rgba(248, 113, 113, 0.1);
-    $color-danger-alert-border: rgba(248, 113, 113, 0.3);
-
-    $color-warning-main: #f59e0b;
-    $color-warning-bg: rgba(245, 158, 11, 0.1);
-    $color-warning-alert-border: rgba(245, 158, 11, 0.3);
-
-    .budget-widget {
+    .budget-bar {
+        container-type: inline-size;
+        
         border-radius: 0.5rem;
         border: 0.0625rem solid $color-border;
-        border-left: 0.1875rem solid $color-success-border;
+        border-left: 0.25rem solid transparent;
         background-color: $color-bg-card;
         padding: 1rem;
-        transition: border-color 0.3s ease;
+        display: flex;
+        flex-direction: column;
+        transition: border-color 0.2s ease;
 
-        &--over {
-            border-left-color: $color-danger-border;
+        @media (min-width: 48rem) {
+            padding: 1.25rem;
+        }
+
+        &--success {
+            border-left-color: rgba($color-success, 0.7);
+            .budget-bar__fill { background-color: $color-success; }
+        }
+        
+        &--warning {
+            border-left-color: rgba($color-warning, 0.7);
+            .budget-bar__fill { background-color: $color-warning; }
+        }
+        
+        &--danger {
+            border-left-color: rgba($color-danger, 0.7);
+            .budget-bar__fill { background-color: $color-danger; }
         }
 
         &__header {
             display: flex;
-            align-items: center;
-            justify-content: space-between;
-            gap: 0.75rem;
+            flex-direction: column;
+            gap: 1rem;
+            margin-bottom: 1rem;
+
+            @container (min-width: 24rem) {
+                flex-direction: row;
+                align-items: flex-start;
+                justify-content: space-between;
+            }
         }
 
         &__info {
             display: flex;
             align-items: center;
             gap: 0.75rem;
-			min-width: 0;
+            width: 100%;
+            min-width: 0;
+
+            @container (min-width: 24rem) {
+                width: auto;
+                flex: 1;
+            }
         }
 
-        &__text {
+        &__badge-wrap {
+            flex-shrink: 0;
+        }
+
+        &__meta {
             display: flex;
             flex-direction: column;
+            min-width: 0;
         }
 
-        &__label {
+        &__title {
             margin: 0;
             font-family: $font-mono;
-            font-size: 0.62rem;
-            letter-spacing: 0.28em;
-            color: $color-text-eyebrow;
+            font-size: 0.65rem;
+            letter-spacing: 0.15em;
+            color: $color-text-muted;
             text-transform: uppercase;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
         }
 
         &__month {
-            margin: 0.125rem 0 0 0;
+            margin: 0.25rem 0 0 0;
             font-family: $font-mono;
-            font-size: 0.7rem;
-            color: $color-text-muted;
+            font-size: 0.65rem;
+            color: $color-text-darker;
+            white-space: nowrap;
         }
 
         &__stats {
-            text-align: right;
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            text-align: left;
+            width: 100%;
+
+            @container (min-width: 24rem) {
+                align-items: flex-end;
+                text-align: right;
+                width: auto;
+                flex-shrink: 0;
+            }
         }
 
         &__amounts {
             margin: 0;
             font-family: $font-mono;
+            white-space: nowrap;
+        }
+
+        &__spent {
             font-size: 1rem;
+            color: $color-text-light;
+            font-weight: 500;
+
+            @container (min-width: 24rem) {
+                font-size: 1.15rem;
+            }
+        }
+
+        &__limit {
+            font-size: 0.85rem;
             color: $color-text-main;
+
+            @container (min-width: 24rem) {
+                font-size: 1rem;
+            }
         }
 
         &__pct {
-            margin: 0;
+            margin: 0.25rem 0 0 0;
             font-family: $font-mono;
             font-size: 0.65rem;
             color: $color-text-muted;
         }
 
         &__track {
-            margin-top: 1rem;
-            height: 0.5rem;
             width: 100%;
-            overflow: hidden;
-            border-radius: 9999px;
-            border: 0.0625rem solid $color-border;
+            height: 0.375rem;
             background-color: $color-bg-track;
+            border-radius: 9999px;
+            overflow: hidden;
         }
 
-        &__bar {
+        &__fill {
             height: 100%;
             border-radius: 9999px;
-            background: $color-success-bar;
-            transition: width 0.3s ease, background-color 0.3s ease;
-
-            &--over {
-                background: $color-danger-bar;
-            }
-        }
-    }
-
-    .alert {
-        margin-top: 0.75rem;
-        display: flex;
-        align-items: center;
-        gap: 0.5rem;
-        border-radius: 0.375rem;
-        border: 0.0625rem solid transparent;
-        padding: 0.5rem;
-
-        &__icon {
-            font-size: 0.875rem;
+            transition: width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
-        &__text {
+        &__alert {
+            margin-top: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 0.375rem;
+            border: 0.0625rem solid transparent;
             font-family: $font-mono;
-            font-size: 0.75rem;
-        }
+            font-size: 0.7rem;
 
-        &--danger {
-            background-color: $color-danger-bg;
-            border-color: $color-danger-alert-border;
-            
-            .alert__text {
-                color: $color-danger-main;
+            &-icon {
+                font-size: 0.8rem;
             }
-        }
 
-        &--warning {
-            background-color: $color-warning-bg;
-            border-color: $color-warning-alert-border;
-            
-            .alert__text {
-                color: $color-warning-main;
+            &--warning {
+                background-color: rgba($color-warning, 0.05);
+                border-color: rgba($color-warning, 0.2);
+                color: $color-warning;
+            }
+
+            &--danger {
+                background-color: rgba($color-danger, 0.05);
+                border-color: rgba($color-danger, 0.2);
+                color: $color-danger;
             }
         }
     }

@@ -114,6 +114,7 @@
     }
 
     .receipt-card {
+        container-type: inline-size;
         border-radius: 0.5rem;
         border: 0.0625rem solid $color-border;
         background-color: $color-bg-card;
@@ -133,6 +134,7 @@
             min-width: 0;
             display: flex;
             flex-direction: column;
+            flex: 1;
         }
 
         &__eyebrow {
@@ -164,8 +166,12 @@
         &__details {
             margin-top: 1rem;
             display: grid;
-            grid-template-columns: repeat(2, 1fr);
+            grid-template-columns: 1fr;
             gap: 0.75rem;
+
+            @container (min-width: 18rem) {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     }
 
@@ -173,14 +179,22 @@
         display: inline-flex;
         align-items: center;
         gap: 0.5rem;
-        border-radius: 9999px;
+        border-radius: 999rem;
         border: 0.0625rem solid transparent;
-        padding: 0.25rem 0.75rem;
+        padding: 0.25rem 0.5rem;
         font-family: $font-mono;
-        font-size: 0.62rem;
-        letter-spacing: 0.28em;
+        font-size: 0.55rem;
+        letter-spacing: 0.2em;
         text-transform: uppercase;
         white-space: nowrap;
+        flex-shrink: 0;
+        transition: all 0.2s ease;
+
+        @container (min-width: 18rem) {
+            padding: 0.25rem 0.75rem;
+            font-size: 0.62rem;
+            letter-spacing: 0.28em;
+        }
 
         &__icon {
             width: 0.875rem;
