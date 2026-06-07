@@ -4,6 +4,8 @@
 	import { socketStore } from '$lib/stores/socket';
 	import { NAV_LINKS } from '$lib/constants/navigation';
 	import { MONTH_LABEL } from '$lib/constants/app';
+	import { enhance } from '$app/forms';
+	import { User, LogOut } from 'lucide-svelte';
 	import '$lib/styles/app-layout.scss';
 
 	let { children, data } = $props();
@@ -155,16 +157,15 @@
 						onclick={closeUserMenu}
 						role="menuitem"
 					>
-						<span class="user-menu__icon">👤</span> Mi perfil
+						<span class="user-menu__icon"><User size={16} /></span> Mi perfil
 					</a>
-					<form method="post" action="/login?/logout" class="user-menu__form" role="none">
+					<form method="post" action="/login?/logout" use:enhance class="user-menu__form" role="none">
 						<button
 							type="submit"
 							class="user-menu__item user-menu__item--logout"
-							onclick={closeUserMenu}
 							role="menuitem"
 						>
-							<span class="user-menu__icon">🚪</span> Cerrar sesión
+							<span class="user-menu__icon"><LogOut size={16} /></span> Cerrar sesión
 						</button>
 					</form>
 				</div>

@@ -1,9 +1,10 @@
 <script lang="ts">
 	import BudgetBar from '$lib/components/BudgetBarWidget.svelte';
-	import { VALID_CATEGORIES, catLabel } from '$lib/constants/categories';
+	import { categoriesStore } from '$lib/stores/categories';
 	import { MONTH_LABEL } from '$lib/constants/app';
 	import { budgetsStore } from '$lib/stores/budgets';
 	import { transactionsStore } from '$lib/stores/transactions';
+	import { Plus, Pencil, Trash2, X, AlertTriangle } from 'lucide-svelte';
 	import '$lib/styles/budget.scss';
 
 	// Spent per category calculated dynamically
@@ -19,13 +20,15 @@
 	// Unused categories (for creating budgets)
 	const unusedCategories = $derived.by(() => {
 		const activeCats = new Set($budgetsStore.map((b) => b.category));
-		return Array.from(VALID_CATEGORIES).filter((cat) => !activeCats.has(cat));
+		return $categoriesStore.filter((cat) => !activeCats.has(cat.id));
 	});
 
 	// State for Add Budget
 	let isCreateModalOpen = $state(false);
 	let newCategory = $state('');
 	let newLimit = $state(100);
+	let customCategoryName = $state('');
+	let customCategoryColor = $state('#60a5fa');
 
 	// State for Edit Budget
 	let isEditModalOpen = $state(false);
@@ -47,14 +50,15 @@
 	const reassignmentOptions = $derived.by(() => {
 		const budget = deletingBudget;
 		if (!budget) return [];
-		return Array.from(VALID_CATEGORIES).filter((cat) => cat !== budget.category);
+		return $categoriesStore.filter((cat) => cat.id !== budget.category);
 	});
 
 	// Open Add Modal
 	const openCreateModal = () => {
 		const unused = unusedCategories;
-		newCategory = unused.length > 0 ? unused[0] : '';
+		newCategory = unused.length > 0 ? unused[0].id : 'new_custom';
 		newLimit = 100;
+		customCategoryName = '';
 		isCreateModalOpen = true;
 	};
 
@@ -75,8 +79,14 @@
 	};
 
 	const handleCreate = () => {
-		if (!newCategory || newLimit <= 0) return;
-		budgetsStore.addBudget(newCategory, newLimit);
+		if (newCategory === 'new_custom') {
+			if (!customCategoryName || newLimit <= 0) return;
+			const id = categoriesStore.addCategory(customCategoryName, customCategoryColor);
+			budgetsStore.addBudget(id, newLimit);
+		} else {
+			if (!newCategory || newLimit <= 0) return;
+			budgetsStore.addBudget(newCategory, newLimit);
+		}
 		isCreateModalOpen = false;
 	};
 
@@ -119,17 +129,18 @@
 				</p>
 			</div>
 			{#if unusedCategories.length > 0}
-				<button type="button" class="btn btn--primary" onclick={openCreateModal}>
-					➕ Añadir Categoría
+				<button type="button" class="btn btn--primary" style="display:inline-flex; align-items:center; gap:0.4rem;" onclick={openCreateModal}>
+					<Plus size={16} /> Añadir Categoría
 				</button>
 			{:else}
 				<button
 					type="button"
 					class="btn btn--primary"
+					style="display:inline-flex; align-items:center; gap:0.4rem;"
 					disabled
 					title="Ya has configurado presupuestos para todas las categorías"
 				>
-					➕ Añadir Categoría
+					<Plus size={16} /> Añadir Categoría
 				</button>
 			{/if}
 		</header>
@@ -149,21 +160,22 @@
 						<div class="card__item">
 							<BudgetBar
 								cat={b.category}
-								label={catLabel(b.category)}
+								label={categoriesStore.getCategoryLabel(b.category)}
 								spent={spentByCat[b.category] ?? 0}
 								limit={b.limitAmount}
 								month={MONTH_LABEL}
 							/>
 							<div class="card__item-actions">
-								<button type="button" class="btn btn--secondary" onclick={() => openEditModal(b)}>
-									✏️ Editar
+								<button type="button" class="btn btn--secondary" style="display:inline-flex; align-items:center; gap:0.4rem;" onclick={() => openEditModal(b)}>
+									<Pencil size={16} /> Editar
 								</button>
 								<button
 									type="button"
 									class="btn btn--outline-danger"
+									style="display:inline-flex; align-items:center; gap:0.4rem;"
 									onclick={() => openDeleteModal(b)}
 								>
-									🗑️ Eliminar
+									<Trash2 size={16} /> Eliminar
 								</button>
 							</div>
 						</div>
@@ -186,18 +198,31 @@
 					style="padding: 0.25rem; border: none; background: transparent;"
 					onclick={() => (isCreateModalOpen = false)}
 				>
-					❌
+					<X size={20} />
 				</button>
 			</header>
 			<div class="modal__body">
 				<div class="form-group">
 					<label class="form-group__label" for="create-category">Categoría</label>
 					<select id="create-category" class="form-group__select" bind:value={newCategory}>
-						{#each unusedCategories as cat (cat)}
-							<option value={cat}>{catLabel(cat)}</option>
+						{#each unusedCategories as cat (cat.id)}
+							<option value={cat.id}>{cat.label}</option>
 						{/each}
+						<option value="new_custom">Crear nueva categoría personalizada...</option>
 					</select>
 				</div>
+				{#if newCategory === 'new_custom'}
+					<div class="form-group" style="display: flex; gap: 1rem;">
+						<div style="flex: 1;">
+							<label class="form-group__label" for="custom-cat-name">Nombre</label>
+							<input id="custom-cat-name" type="text" class="form-group__input" bind:value={customCategoryName} placeholder="Ej. Mascotas" required />
+						</div>
+						<div style="width: 4rem;">
+							<label class="form-group__label" for="custom-cat-color">Color</label>
+							<input id="custom-cat-color" type="color" class="form-group__input" style="padding: 0; height: 2.5rem; cursor: pointer;" bind:value={customCategoryColor} />
+						</div>
+					</div>
+				{/if}
 				<div class="form-group">
 					<label class="form-group__label" for="create-limit">Límite (€)</label>
 					<input
@@ -243,7 +268,7 @@
 					style="padding: 0.25rem; border: none; background: transparent;"
 					onclick={() => (isEditModalOpen = false)}
 				>
-					❌
+					<X size={20} />
 				</button>
 			</header>
 			<div class="modal__body">
@@ -253,7 +278,7 @@
 						id="edit-category"
 						type="text"
 						class="form-group__input"
-						value={catLabel(editingBudget.category)}
+						value={categoriesStore.getCategoryLabel(editingBudget.category)}
 						disabled
 					/>
 				</div>
@@ -298,13 +323,13 @@
 					style="padding: 0.25rem; border: none; background: transparent;"
 					onclick={() => (isDeleteModalOpen = false)}
 				>
-					❌
+					<X size={20} />
 				</button>
 			</header>
 			<div class="modal__body">
 				<p>
 					¿Estás seguro de que deseas eliminar el presupuesto de la categoría <strong>
-						{catLabel(deletingBudget.category)}
+						{categoriesStore.getCategoryLabel(deletingBudget.category)}
 					</strong>?
 				</p>
 
@@ -313,9 +338,9 @@
 						style="border: 0.0625rem solid rgba(248, 113, 113, 0.2); background-color: rgba(248, 113, 113, 0.05); padding: 0.75rem 1rem; border-radius: 0.375rem; margin-top: 0.5rem; display: flex; flex-direction: column; gap: 0.5rem;"
 					>
 						<span
-							style="color: var(--color-danger); font-weight: bold; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em;"
+							style="color: var(--color-danger); font-weight: bold; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; display:flex; align-items:center; gap:0.4rem;"
 						>
-							⚠️ Advertencia de Facturas
+							<AlertTriangle size={16} /> Advertencia de Facturas
 						</span>
 						<p style="margin: 0; font-size: 0.8rem;">
 							Esta categoría tiene <strong>{txnsCount}</strong> transacciones/recibos asociados en el
@@ -364,8 +389,8 @@
 									class="form-group__select"
 									bind:value={reassignCategoryTarget}
 								>
-									{#each reassignmentOptions as cat (cat)}
-										<option value={cat}>{catLabel(cat)}</option>
+									{#each reassignmentOptions as cat (cat.id)}
+										<option value={cat.id}>{cat.label}</option>
 									{/each}
 								</select>
 							</div>

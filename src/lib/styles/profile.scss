@@ -137,12 +137,23 @@
 		padding: 1.5rem;
 
 		&__title {
-			margin: 0 0 1.25rem 0;
+			margin: 0;
 			font-family: $font-serif;
 			font-size: 1.1rem;
 			color: $color-heading;
+		}
+
+		&__header {
+			display: flex;
+			align-items: center;
+			gap: 0.5rem;
 			border-bottom: 0.0625rem solid $color-border;
-			padding-bottom: 0.5rem;
+			padding-bottom: 0.75rem;
+			margin-bottom: 1.25rem;
+		}
+
+		&__icon {
+			color: $color-accent;
 		}
 
 		&__list {
@@ -167,5 +178,101 @@
 			color: $color-heading;
 			font-weight: 500;
 		}
+	}
+
+	.details-form {
+		display: flex;
+		flex-direction: column;
+		gap: 1.25rem;
+
+		&__actions {
+			display: flex;
+			align-items: center;
+			justify-content: flex-end;
+			gap: 1rem;
+			margin-top: 0.5rem;
+		}
+	}
+
+	.form-group {
+		&--inline {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+
+			.form-group__label {
+				margin: 0;
+			}
+
+			.form-group__select {
+				width: auto;
+				min-width: 150px;
+			}
+		}
+
+		&--toggle {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			padding-top: 0.5rem;
+
+			.form-group__label {
+				margin: 0;
+			}
+		}
+	}
+
+	.toggle-checkbox {
+		appearance: none;
+		width: 2.5rem;
+		height: 1.25rem;
+		background: $color-bg3;
+		border-radius: 1rem;
+		position: relative;
+		cursor: pointer;
+		outline: none;
+		border: 0.0625rem solid $color-border;
+		transition: background 0.2s, border-color 0.2s;
+
+		&::before {
+			content: '';
+			position: absolute;
+			top: 50%;
+			left: 0.1rem;
+			transform: translateY(-50%);
+			width: 1rem;
+			height: 1rem;
+			background: $color-text;
+			border-radius: 50%;
+			transition: transform 0.2s;
+		}
+
+		&:checked {
+			background: rgba($color-accent, 0.2);
+			border-color: $color-accent;
+
+			&::before {
+				transform: translate(1.25rem, -50%);
+				background: $color-accent;
+			}
+		}
+	}
+
+	.status-msg {
+		display: flex;
+		align-items: center;
+		gap: 0.4rem;
+		font-size: 0.85rem;
+		font-family: $font-mono;
+		animation: fadeIn 0.3s ease-in-out;
+
+		&--success {
+			color: $color-green;
+		}
+	}
+
+	@keyframes fadeIn {
+		from { opacity: 0; transform: translateY(5px); }
+		to { opacity: 1; transform: translateY(0); }
 	}
 }
