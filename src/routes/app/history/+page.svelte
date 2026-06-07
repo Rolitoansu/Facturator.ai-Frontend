@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { mockHistoryReceipts } from '$lib/mock/lensledger';
 	import { STATUS_MAP, receiptStatusLabel } from '$lib/constants/receipt-status';
-	import { VALID_CATEGORIES, catLabel } from '$lib/constants/categories';
+	import { categoriesStore } from '$lib/stores/categories';
 	import '$lib/styles/history.scss';
 
 	// State variables
@@ -109,8 +109,8 @@
 					<div class="toolbar__select-wrapper">
 						<select class="toolbar__select" bind:value={selectedCategory}>
 							<option value="all">Todas las categorías</option>
-							{#each Array.from(VALID_CATEGORIES) as cat (cat)}
-								<option value={cat}>{catLabel(cat)}</option>
+							{#each $categoriesStore as cat (cat.id)}
+								<option value={cat.id}>{cat.label}</option>
 							{/each}
 						</select>
 						<svg
@@ -162,7 +162,7 @@
 								<p class="receipt-item__merchant" title={r.merchant}>{r.merchant}</p>
 								<p class="receipt-item__amount">{r.amount}</p>
 								<p class="receipt-item__meta">
-									{catLabel(r.category)} · {r.date}
+									{categoriesStore.getCategoryLabel(r.category)} · {r.date}
 								</p>
 							</div>
 							<div class="receipt-item__status">

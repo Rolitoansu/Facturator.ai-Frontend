@@ -1,22 +1,17 @@
 <script lang="ts">
 	import type { CategoryBadgeProps } from '$lib/types/ui.types';
-	import {
-		VALID_CATEGORIES,
-		normalizeCategory,
-		formatCategoryLabel
-	} from '$lib/constants/categories';
+	import { categoriesStore } from '$lib/stores/categories';
 	import '$lib/styles/CategoryBadge.scss';
 
 	const { category }: CategoryBadgeProps = $props();
 
-	const label = $derived(formatCategoryLabel(category || ''));
-
-	const modifier = $derived.by(() => {
-		const normalized = normalizeCategory(category || 'otros');
-		return VALID_CATEGORIES.has(normalized as never) ? normalized : 'default';
-	});
+	const label = $derived(categoriesStore.getCategoryLabel(category || ''));
+	const color = $derived(categoriesStore.getCategoryColor(category || 'otros'));
 </script>
 
-<span class="badge badge--{modifier}">
+<span 
+	class="badge" 
+	style="background-color: {color}1A; color: {color}; border-color: {color}4D;"
+>
 	{label}
 </span>

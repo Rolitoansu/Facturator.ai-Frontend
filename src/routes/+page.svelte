@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { BADGES, METRICS } from '$lib/constants/landing';
+	import { Camera, Tag, BarChart, Bell, FileText, Image as ImageIcon, Mail, MessageCircle, Table, CheckCircle2, RotateCcw, Rocket } from 'lucide-svelte';
 	import '$lib/styles/home.scss';
 
 	// Scanning Simulator State
@@ -90,7 +91,7 @@
 </script>
 
 <svelte:head>
-	<title>LensLedger — Facturación Inteligente y Control de Gastos con IA</title>
+	<title>LensLedger — Facturación Automática y Control de Gastos</title>
 </svelte:head>
 
 <div class="landing-layout">
@@ -166,7 +167,7 @@
 					Tus facturas bajo control, <span class="gradient-text">de un vistazo</span>
 				</h1>
 				<p class="hero__sub">
-					Sube tus tickets y facturas. Nuestra IA extrae importes, comercios, fechas y categorías de
+					Sube tus tickets y facturas. Nuestro sistema extrae importes, comercios, fechas y categorías de
 					forma automática. Observa cómo tus presupuestos y estadísticas se actualizan al instante en
 					un dashboard impecable y dinámico.
 				</p>
@@ -245,11 +246,11 @@
 		<div class="container">
 			<p class="trust-bar__title">Compatible con tus formatos e integraciones favoritas</p>
 			<div class="trust-bar__logos">
-				<span class="trust-logo">📄 PDFs</span>
-				<span class="trust-logo">📸 Imágenes (PNG/JPG)</span>
-				<span class="trust-logo">📧 Email Forwarding</span>
-				<span class="trust-logo">💬 WhatsApp Upload</span>
-				<span class="trust-logo">📊 Exportación Excel</span>
+				<span class="trust-logo" style="display:inline-flex; align-items:center; gap:0.4rem;"><FileText size={20} /> PDFs</span>
+				<span class="trust-logo" style="display:inline-flex; align-items:center; gap:0.4rem;"><ImageIcon size={20} /> Imágenes (PNG/JPG)</span>
+				<span class="trust-logo" style="display:inline-flex; align-items:center; gap:0.4rem;"><Mail size={20} /> Email Forwarding</span>
+				<span class="trust-logo" style="display:inline-flex; align-items:center; gap:0.4rem;"><MessageCircle size={20} /> WhatsApp Upload</span>
+				<span class="trust-logo" style="display:inline-flex; align-items:center; gap:0.4rem;"><Table size={20} /> Exportación Excel</span>
 			</div>
 		</div>
 	</section>
@@ -262,31 +263,31 @@
 				<h2 class="section-title">Olvídate de rellenar tablas a mano</h2>
 				<p class="section-sub">
 					LensLedger elimina la fricción de llevar la contabilidad personal. Sube una foto y observa
-					la magia de nuestro motor inteligente.
+					lo rápido que se procesa la información.
 				</p>
 			</div>
 
 			<div class="features__grid">
 				<article class="feature-card">
-					<div class="feature-card__icon">📷</div>
+					<div class="feature-card__icon"><Camera size={32} /></div>
 					<h3 class="feature-card__title">Escaneo Inteligente OCR</h3>
 					<p class="feature-card__body">
-						Digitaliza cualquier ticket impreso o factura digital. Nuestro extractor con IA lee y
+						Digitaliza cualquier ticket impreso o factura digital. Nuestro extractor automatizado lee y
 						estructura la información al instante.
 					</p>
 				</article>
 
 				<article class="feature-card">
-					<div class="feature-card__icon">🏷️</div>
+					<div class="feature-card__icon"><Tag size={32} /></div>
 					<h3 class="feature-card__title">Categorización Automática</h3>
 					<p class="feature-card__body">
-						La IA deduce de forma automática si un recibo pertenece a Alimentación, Transporte, Ocio
+						El sistema deduce de forma automática si un recibo pertenece a Alimentación, Transporte, Ocio
 						o Salud, ordenándolos en tu dashboard.
 					</p>
 				</article>
 
 				<article class="feature-card">
-					<div class="feature-card__icon">📊</div>
+					<div class="feature-card__icon"><BarChart size={32} /></div>
 					<h3 class="feature-card__title">Gráficos Analíticos</h3>
 					<p class="feature-card__body">
 						Visualiza de manera intuitiva a dónde va tu dinero cada mes para tomar mejores decisiones
@@ -295,7 +296,7 @@
 				</article>
 
 				<article class="feature-card">
-					<div class="feature-card__icon">🚨</div>
+					<div class="feature-card__icon"><Bell size={32} /></div>
 					<h3 class="feature-card__title">Límites y Alertas</h3>
 					<p class="feature-card__body">
 						Configura presupuestos máximos por categoría. El sistema te avisará con micro-alertas
@@ -312,7 +313,7 @@
 			<div class="section-header">
 				<p class="section-label">02 — Simulador de Escaneo</p>
 				<h2 class="section-title">Compruébalo en tiempo real</h2>
-				<p class="section-sub">Haz clic abajo para simular cómo LensLedger procesa un ticket real con visión artificial.</p>
+				<p class="section-sub">Haz clic abajo para simular cómo LensLedger procesa un ticket real.</p>
 			</div>
 
 			<div class="demo-box">
@@ -352,15 +353,15 @@
 					<!-- Scan console and results -->
 					<div class="scanner-console">
 						{#if scanState === 'idle'}
-							<h3 class="scanner-console__title">Simulador de Visión por Computadora</h3>
+							<h3 class="scanner-console__title">Demostración en vivo</h3>
 							<p class="scanner-console__text">
-								Inicia la simulación para observar el proceso de lectura OCR, análisis de texto e integración financiera de un ticket de compra.
+								Inicia la demostración para observar el proceso de lectura OCR, análisis de texto e integración financiera de un ticket de compra.
 							</p>
-							<button type="button" class="btn btn--accent btn--large" onclick={triggerScan}>
-								🚀 Escanear Ticket de Ejemplo
+							<button type="button" class="btn btn--accent btn--large" style="display:inline-flex; align-items:center; gap:0.5rem;" onclick={triggerScan}>
+								<Rocket size={20} /> Escanear Ticket de Ejemplo
 							</button>
 						{:else if scanState === 'scanning'}
-							<h3 class="scanner-console__title">Procesando imagen con IA...</h3>
+							<h3 class="scanner-console__title">Procesando imagen...</h3>
 							<div class="progress-container">
 								<div class="progress-bar">
 									<div class="progress-bar__fill" style="width: {scanProgress}%;"></div>
@@ -381,12 +382,12 @@
 								</div>
 								<h4 class="extracted-card__merchant">Supermercados Dia</h4>
 								<span class="extracted-card__amount">€17.50 EUR</span>
-								<p class="extracted-card__status">✅ Estado: Añadido al Dashboard</p>
+								<p class="extracted-card__status" style="display:flex; align-items:center; gap:0.4rem;"><CheckCircle2 size={16} /> Estado: Añadido al Dashboard</p>
 							</div>
 
 							<div class="scanner-console__actions">
-								<button type="button" class="btn btn--secondary" onclick={resetScan}>
-									🔄 Restablecer
+								<button type="button" class="btn btn--secondary" style="display:inline-flex; align-items:center; gap:0.5rem;" onclick={resetScan}>
+									<RotateCcw size={16} /> Restablecer
 								</button>
 								<a href={resolve('/login?mode=register')} class="btn btn--accent">
 									Probar Con Mis Tickets
@@ -472,7 +473,7 @@
 					<hr class="pricing-card__divider" />
 					<ul class="pricing-card__features">
 						<li>Escaneos ilimitados sin restricciones</li>
-						<li>Categorización con IA avanzada</li>
+						<li>Categorización automatizada</li>
 						<li>Alertas y presupuestos ilimitados</li>
 						<li>Exportación de informes en PDF y CSV</li>
 						<li>Soporte técnico prioritario</li>
@@ -559,7 +560,7 @@
 		<div class="container footer__inner">
 			<div class="footer__brand">
 				<span class="footer__logo">LensLedger</span>
-				<p class="footer__tagline">Organización financiera simplificada con inteligencia artificial.</p>
+				<p class="footer__tagline">Organización financiera simplificada y automatizada.</p>
 			</div>
 			
 			<div class="footer__tech">

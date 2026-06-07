@@ -2,6 +2,7 @@
 	import CategoryBadge from '$lib/components/CategoryBadge.svelte';
 	import type { BudgetBarProps } from '$lib/types/ui.types';
 	import { formatAmount } from '$lib/utils/currency';
+	import { AlertCircle, AlertTriangle } from 'lucide-svelte';
 	import '$lib/styles/BudgetBarWidget.scss';
 
 	const { cat, label, spent, limit, month = 'Mes actual' }: BudgetBarProps = $props();
@@ -55,13 +56,13 @@
 	</div>
 
 	{#if stats.isOver}
-		<div class="budget-bar__alert budget-bar__alert--danger">
-			<span class="budget-bar__alert-icon" aria-hidden="true">🚨</span>
+		<div class="budget-bar__alert budget-bar__alert--danger" style="display:flex; align-items:center; gap:0.4rem;">
+			<span class="budget-bar__alert-icon" aria-hidden="true"><AlertCircle size={16} /></span>
 			Superado por {stats.diffAmount} EUR
 		</div>
 	{:else if stats.isWarning}
-		<div class="budget-bar__alert budget-bar__alert--warning">
-			<span class="budget-bar__alert-icon" aria-hidden="true">⚠️</span>
+		<div class="budget-bar__alert budget-bar__alert--warning" style="display:flex; align-items:center; gap:0.4rem;">
+			<span class="budget-bar__alert-icon" aria-hidden="true"><AlertTriangle size={16} /></span>
 			Queda el {100 - stats.pctDisplay}% (alerta > 80%)
 		</div>
 	{/if}
