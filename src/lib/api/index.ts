@@ -4,7 +4,7 @@ export type { User, Receipt, Transaction, Budget } from '$lib/types/api.types';
 
 // Re-exporta funciones y datos de cada módulo
 export { getCurrentUserMock } from './user';
-export { getReceiptMocks, uploadReceipt } from './receipts';
+export { uploadReceipt } from './receipts';
 export { getTransactions } from './transactions';
 export { getBudgets } from './budgets';
 export { mockUserId, mockReceipts, mockTransactions, mockBudgets } from './mock-data';

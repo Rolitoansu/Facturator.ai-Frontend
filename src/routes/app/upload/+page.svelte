@@ -9,7 +9,6 @@
 
 	function handleUploaded(receipt: Receipt) {
 		transactionsStore.addProcessingReceipt(receipt);
-		socketStore.simulateReceiptProcessed(receipt.id);
 	}
 </script>
 

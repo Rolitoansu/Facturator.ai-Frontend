@@ -62,6 +62,15 @@
 			.substring(0, 2)
 			.toUpperCase();
 	});
+
+	// Connect/disconnect real WebSocket when user changes
+	$effect(() => {
+		if (user?.id) {
+			socketStore.connect(user.id);
+		} else {
+			socketStore.disconnect();
+		}
+	});
 </script>
 
 <svelte:window onclick={handleClickOutside} />

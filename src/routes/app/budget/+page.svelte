@@ -74,7 +74,7 @@
 		deletingBudget = budget;
 		deleteOption = 'reassign';
 		const targets = reassignmentOptions;
-		reassignCategoryTarget = targets.length > 0 ? targets[0] : '';
+		reassignCategoryTarget = targets.length > 0 ? targets[0].id : '';
 		isDeleteModalOpen = true;
 	};
 
