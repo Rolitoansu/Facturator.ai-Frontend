@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import { User, Settings, Lock, CircleCheck, Save, Crown } from 'lucide-svelte';
 	import '$lib/styles/profile.scss';
 
@@ -16,8 +17,8 @@
 	});
 
 	// Form states
-	let profileName = $state(user?.name ?? 'Usuario Demo');
-	let profileEmail = $state(user?.email ?? 'user@example.com');
+	let profileName = $state(untrack(() => data?.user?.name ?? 'Usuario Demo'));
+	let profileEmail = $state(untrack(() => data?.user?.email ?? 'user@example.com'));
 	let isSavingProfile = $state(false);
 	let profileSaved = $state(false);
 

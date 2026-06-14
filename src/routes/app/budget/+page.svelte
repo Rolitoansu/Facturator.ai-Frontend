@@ -17,10 +17,9 @@
 		return spent;
 	});
 
-	// Unused categories (for creating budgets)
 	const unusedCategories = $derived.by(() => {
 		const activeCats = new Set($budgetsStore.map((b) => b.category));
-		return $categoriesStore.filter((cat) => !activeCats.has(cat.id));
+		return $categoriesStore.filter((cat) => !activeCats.has(cat.slug));
 	});
 
 	// State for Add Budget
@@ -56,7 +55,7 @@
 	// Open Add Modal
 	const openCreateModal = () => {
 		const unused = unusedCategories;
-		newCategory = unused.length > 0 ? unused[0].id : 'new_custom';
+		newCategory = unused.length > 0 ? unused[0].slug : 'new_custom';
 		newLimit = 100;
 		customCategoryName = '';
 		isCreateModalOpen = true;
@@ -207,7 +206,7 @@
 					<label class="form-group__label" for="create-category">Categoría</label>
 					<select id="create-category" class="form-group__select" bind:value={newCategory}>
 						{#each unusedCategories as cat (cat.id)}
-							<option value={cat.id}>{cat.label}</option>
+							<option value={cat.slug}>{cat.label}</option>
 						{/each}
 						<option value="new_custom">Crear nueva categoría personalizada...</option>
 					</select>

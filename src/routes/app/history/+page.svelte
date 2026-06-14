@@ -239,7 +239,11 @@
 
 	<!-- Modal de Revisión -->
 	{#if reviewModalOpen && reviewingTransaction}
+		<!-- svelte-ignore a11y_click_events_have_key_events -->
+		<!-- svelte-ignore a11y_no_static_element_interactions -->
 		<div class="modal-overlay" onclick={() => (reviewModalOpen = false)}>
+			<!-- svelte-ignore a11y_click_events_have_key_events -->
+			<!-- svelte-ignore a11y_no_static_element_interactions -->
 			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
 				<h3 class="modal-title" style="margin-bottom: 0.5rem; color: var(--color-warning); display: flex; align-items: center; gap: 0.5rem;">
 					<CircleAlert size={20} />

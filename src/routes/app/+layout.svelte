@@ -2,6 +2,9 @@
 	import { page } from '$app/state';
 	import { resolve } from '$app/paths';
 	import { socketStore } from '$lib/stores/socket';
+	import { transactionsStore } from '$lib/stores/transactions';
+	import { categoriesStore } from '$lib/stores/categories';
+	import { budgetsStore } from '$lib/stores/budgets';
 	import { NAV_LINKS } from '$lib/constants/navigation';
 	import { MONTH_LABEL } from '$lib/constants/app';
 	import { enhance } from '$app/forms';
@@ -63,10 +66,13 @@
 			.toUpperCase();
 	});
 
-	// Connect/disconnect real WebSocket when user changes
+	// Connect/disconnect real WebSocket and fetch initial data when user changes
 	$effect(() => {
 		if (user?.id) {
 			socketStore.connect(user.id);
+			transactionsStore.reload();
+			categoriesStore.reload();
+			budgetsStore.reload();
 		} else {
 			socketStore.disconnect();
 		}
@@ -143,6 +149,7 @@
 	<!-- FLOATING DOCK -->
 	<nav class="dock">
 		{#each NAV_LINKS as item (item.id)}
+			{@const Icon = item.icon}
 			<a
 				href={resolve(item.href)}
 				class="dock__link"
@@ -153,7 +160,7 @@
 					<div class="dock__indicator" style="view-transition-name: dock-indicator"></div>
 				{/if}
 				<span class="dock__icon">
-					<svelte:component this={item.icon} size={22} strokeWidth={2.5} />
+					<Icon size={22} strokeWidth={2.5} />
 				</span>
 				<span class="dock__label">{item.label}</span>
 			</a>

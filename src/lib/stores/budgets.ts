@@ -60,9 +60,6 @@ const createBudgetsStore = () => {
 			throw err;
 		}
 	};
-
-	void load();
-
 	return {
 		subscribe,
 		reload: load,

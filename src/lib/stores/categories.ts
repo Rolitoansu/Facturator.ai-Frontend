@@ -22,7 +22,7 @@ const createCategoriesStore = () => {
 		try {
 			const cats = await fetchCategories();
 			set(
-				cats.map((c: CategoryAPI) => ({
+				(cats || []).map((c: CategoryAPI) => ({
 					id: c.id,
 					slug: c.slug,
 					label: c.label,
