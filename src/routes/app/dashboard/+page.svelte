@@ -1,16 +1,15 @@
 <script lang="ts">
 	import CategoryBadge from '$lib/components/CategoryBadge.svelte';
 	import ReceiptCard from '$lib/components/ReceiptCard.svelte';
-	import SpendingChart from '$lib/components/SpendingChart.svelte';
 	import BudgetBar from '$lib/components/BudgetBarWidget.svelte';
 	import { transactionsStore } from '$lib/stores/transactions';
+	import { categoriesStore } from '$lib/stores/categories';
 	import { formatCurrency } from '$lib/utils/currency';
 	import { transactionToReceipt } from '$lib/utils/receipt';
-	import { mockChartData, mockDashboardCategories } from '$lib/mock/lensledger';
 	import { budgetsStore } from '$lib/stores/budgets';
 	import '$lib/styles/dashboard.scss';
 
-	const totalMonth = $derived($transactionsStore.items.reduce((sum, txn) => sum + txn.amount, 0));
+	const totalMonth = $derived($transactionsStore.items.reduce((sum, txn) => sum + txn.rawAmount, 0));
 	const receiptsCount = $derived($transactionsStore.items.length);
 
 	const budgetTotal = $derived($budgetsStore.reduce((sum, b) => sum + b.limitAmount, 0));
@@ -18,18 +17,21 @@
 
 	const categorySpentByCat = $derived.by(() => {
 		const spentByCat: Record<string, number> = {};
-		for (const c of mockDashboardCategories) {
-			const num = Number(c.amt.replace('€', '').replace(',', '.'));
-			spentByCat[String(c.cat)] = Number.isFinite(num) ? num : 0;
+		for (const txn of $transactionsStore.items) {
+			const cat = txn.category;
+			if (!spentByCat[cat]) spentByCat[cat] = 0;
+			spentByCat[cat] += txn.rawAmount;
 		}
 		return spentByCat;
 	});
+
+	const activeCategories = $derived(Object.keys(categorySpentByCat));
 </script>
 
 <main class="dashboard">
 	<div class="dashboard__wrap">
 		<header class="header">
-			<p class="header__eyebrow">LensLedger Dashboard</p>
+			<p class="header__eyebrow">Facturator.ai Dashboard</p>
 			<h1 class="header__title">Resumen financiero</h1>
 			<p class="header__sub">Total del mes, presupuesto y recibos recientes.</p>
 		</header>
@@ -51,21 +53,23 @@
 					</div>
 				</div>
 
-				<SpendingChart data={mockChartData} />
-
 				<div class="panel">
 					<h2 class="panel__title">Por categoría</h2>
 					<div class="panel__grid">
-						{#each mockDashboardCategories as c (c.cat)}
-							{@const spent = categorySpentByCat[c.cat as string] ?? 0}
-							<BudgetBar
-								cat={c.cat}
-								label={c.cat}
-								{spent}
-								limit={$budgetsStore.find((b) => b.category === c.cat)?.limitAmount ?? 1}
-								month="Mayo 2026"
-							/>
-						{/each}
+						{#if activeCategories.length === 0}
+							<p class="message">No hay gastos este mes.</p>
+						{:else}
+							{#each activeCategories as cat}
+								{@const spent = categorySpentByCat[cat]}
+								<BudgetBar
+									cat={cat}
+									label={categoriesStore.getCategoryLabel(cat)}
+									{spent}
+									limit={$budgetsStore.find((b) => b.category === cat)?.limitAmount ?? 0}
+									month=""
+								/>
+							{/each}
+						{/if}
 					</div>
 				</div>
 			</div>
@@ -83,8 +87,10 @@
 						<div class="message message--error">
 							Error cargando transacciones: {$transactionsStore.error}
 						</div>
+					{:else if $transactionsStore.items.length === 0}
+						<div class="message">No hay transacciones todavía.</div>
 					{:else}
-						{#each $transactionsStore.items as transaction (transaction.id)}
+						{#each $transactionsStore.items.slice(0, 5) as transaction (transaction.id)}
 							{@const receipt = transactionToReceipt(transaction)}
 							<div class="receipt">
 								<div class="receipt__header">

@@ -17,7 +17,7 @@
 </script>
 
 <svelte:head>
-	<title>LensLedger</title>
+	<title>Facturator.ai</title>
 </svelte:head>
 
 {@render children()}

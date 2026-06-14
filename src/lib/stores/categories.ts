@@ -1,52 +1,79 @@
 import { writable, get } from 'svelte/store';
-import { VALID_CATEGORIES, CATEGORY_COLORS } from '$lib/constants/categories';
+import {
+	getCategories as fetchCategories,
+	createCategory as apiCreateCategory
+} from '$lib/api/categories';
+import type { CategoryAPI } from '$lib/api/categories';
 
 export interface Category {
 	id: string;
+	slug: string;
 	label: string;
 	color: string;
+	isGlobal: boolean;
 }
 
-const generateDefaultCategories = (): Category[] => {
-	return Array.from(VALID_CATEGORIES).map((cat) => ({
-		id: cat,
-		label: cat === 'alimentacion' ? 'alimentación' : cat,
-		color: CATEGORY_COLORS[cat] || '#888888'
-	}));
-};
-
 const createCategoriesStore = () => {
-	const { subscribe, set, update } = writable<Category[]>(generateDefaultCategories());
+	const { subscribe, set, update } = writable<Category[]>([]);
+	let loaded = false;
 
-	const addCategory = (label: string, color: string) => {
-		const id = label
-			.toLowerCase()
-			.normalize('NFD')
-			.replace(/[\u0300-\u036f]/g, '')
-			.replace(/[^a-z0-9]/g, '_');
-
-		update((cats) => {
-			if (cats.some((c) => c.id === id)) return cats;
-			return [...cats, { id, label, color }];
-		});
-
-		return id;
+	const load = async () => {
+		if (loaded) return;
+		try {
+			const cats = await fetchCategories();
+			set(
+				cats.map((c: CategoryAPI) => ({
+					id: c.id,
+					slug: c.slug,
+					label: c.label,
+					color: c.color,
+					isGlobal: c.userId === null
+				}))
+			);
+			loaded = true;
+		} catch (err) {
+			console.error('Error loading categories:', err);
+		}
 	};
 
-	const getCategoryColor = (id: string): string => {
+	const addCategory = async (label: string, color: string): Promise<string> => {
+		try {
+			const created = await apiCreateCategory(label, color);
+			update((cats) => {
+				if (cats.some((c) => c.slug === created.slug)) return cats;
+				return [
+					...cats,
+					{
+						id: created.id,
+						slug: created.slug,
+						label: created.label,
+						color: created.color,
+						isGlobal: false
+					}
+				];
+			});
+			return created.slug;
+		} catch (err) {
+			console.error('Error creating category:', err);
+			throw err;
+		}
+	};
+
+	const getCategoryColor = (slug: string): string => {
 		const cats = get({ subscribe });
-		const cat = cats.find((c) => c.id === id);
+		const cat = cats.find((c) => c.slug === slug);
 		return cat ? cat.color : '#888888';
 	};
 
-	const getCategoryLabel = (id: string): string => {
+	const getCategoryLabel = (slug: string): string => {
 		const cats = get({ subscribe });
-		const cat = cats.find((c) => c.id === id);
-		return cat ? cat.label : id;
+		const cat = cats.find((c) => c.slug === slug);
+		return cat ? cat.label : slug;
 	};
 
 	return {
 		subscribe,
+		reload: load,
 		addCategory,
 		getCategoryColor,
 		getCategoryLabel,

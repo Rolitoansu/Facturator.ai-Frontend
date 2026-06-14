@@ -16,8 +16,7 @@
 
 	const switchTo = (next: 'login' | 'register') => (mode = next);
 
-	// Mensajes de error devueltos por las acciones del servidor
-	let { form } = $props();
+
 </script>
 
 <svelte:head>
@@ -98,16 +97,6 @@
 					<input type="password" name="password" required class="input" autocomplete="current-password" />
 				</label>
 
-				<button type="submit" class="btn btn--primary auth-form__submit"> Login </button>
-
-				{#if form?.message}
-					<p style="color: #ef4444; font-size: 0.8rem; margin-top: 0.5rem; text-align: center;">{form.message}</p>
-				{/if}
-
-				<p class="auth-form__hint">
-					Usa el formulario demo para establecer sesión y desbloquear rutas /app/*.
-					<br/>(Demo: <strong>admin@acme.com</strong> / <strong>password123</strong>)
-				</p>
 				<button type="submit" class="btn btn--primary auth-form__submit" id="btn-signin-email">
 					Iniciar sesión
 				</button>
@@ -133,13 +122,6 @@
 					Crear cuenta
 				</button>
 
-				<button type="submit" class="btn btn--primary auth-form__submit"> Register </button>
-
-				{#if form?.message}
-					<p style="color: #ef4444; font-size: 0.8rem; margin-top: 0.5rem; text-align: center;">{form.message}</p>
-				{/if}
-
-				<p class="auth-form__hint">Registro demo con mejor-auth.</p>
 				<p class="auth-form__hint">
 					Al registrarte aceptas nuestros términos de servicio.
 				</p>

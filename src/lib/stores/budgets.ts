@@ -1,37 +1,69 @@
 import { writable } from 'svelte/store';
 import type { Budget } from '$lib/types/api.types';
-import { mockBudgets } from '$lib/mock/lensledger';
+import {
+	getBudgets as fetchBudgets,
+	createBudget as apiCreateBudget,
+	updateBudget as apiUpdateBudget,
+	deleteBudget as apiDeleteBudget
+} from '$lib/api/budgets';
 
 const createBudgetsStore = () => {
-	const { subscribe, set, update } = writable<Budget[]>(mockBudgets);
+	const { subscribe, set, update } = writable<Budget[]>([]);
+	let loading = false;
 
-	const addBudget = (category: string, limitAmount: number) => {
-		update((budgets) => {
-			const exists = budgets.some((b) => b.category === category);
-			if (exists) {
-				return budgets.map((b) => (b.category === category ? { ...b, limitAmount } : b));
-			}
-			const newBudget: Budget = {
-				id: `bdg_${Math.random().toString(36).substring(2, 11)}`,
-				userId: 'user_9f2b7d6a',
-				category,
-				limitAmount,
-				month: '2026-05-01'
-			};
-			return [...budgets, newBudget];
-		});
+	const load = async () => {
+		if (loading) return;
+		loading = true;
+		try {
+			const budgets = await fetchBudgets();
+			set(budgets);
+		} catch (err) {
+			console.error('Error loading budgets:', err);
+		} finally {
+			loading = false;
+		}
 	};
 
-	const updateBudget = (id: string, limitAmount: number) => {
-		update((budgets) => budgets.map((b) => (b.id === id ? { ...b, limitAmount } : b)));
+	const addBudget = async (category: string, limitAmount: number, month?: string) => {
+		try {
+			const newBudget = await apiCreateBudget(category, limitAmount, month);
+			update((budgets) => {
+				// If it was an upsert, replace existing
+				const exists = budgets.some((b) => b.category === category);
+				if (exists) {
+					return budgets.map((b) => (b.category === category ? newBudget : b));
+				}
+				return [...budgets, newBudget];
+			});
+		} catch (err) {
+			console.error('Error creating budget:', err);
+			throw err;
+		}
 	};
 
-	const deleteBudget = (id: string) => {
-		update((budgets) => budgets.filter((b) => b.id !== id));
+	const updateBudget = async (id: string, limitAmount: number) => {
+		try {
+			await apiUpdateBudget(id, limitAmount);
+			update((budgets) => budgets.map((b) => (b.id === id ? { ...b, limitAmount } : b)));
+		} catch (err) {
+			console.error('Error updating budget:', err);
+			throw err;
+		}
+	};
+
+	const deleteBudget = async (id: string) => {
+		try {
+			await apiDeleteBudget(id);
+			update((budgets) => budgets.filter((b) => b.id !== id));
+		} catch (err) {
+			console.error('Error deleting budget:', err);
+			throw err;
+		}
 	};
 
 	return {
 		subscribe,
+		reload: load,
 		addBudget,
 		updateBudget,
 		deleteBudget,

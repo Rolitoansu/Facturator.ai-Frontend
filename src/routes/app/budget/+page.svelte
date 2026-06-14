@@ -115,14 +115,14 @@
 </script>
 
 <svelte:head>
-	<title>LensLedger — Presupuestos</title>
+	<title>Facturator.ai — Presupuestos</title>
 </svelte:head>
 
 <main class="budget-page">
 	<div class="budget-page__wrap">
 		<header class="header">
 			<div class="header__left">
-				<p class="header__eyebrow">LensLedger</p>
+				<p class="header__eyebrow">Facturator.ai</p>
 				<h1 class="header__title">Presupuestos</h1>
 				<p class="header__sub">
 					Gestiona tus límites de gastos mensuales por categoría de forma dinámica.

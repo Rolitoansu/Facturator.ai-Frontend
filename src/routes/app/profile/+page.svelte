@@ -66,13 +66,13 @@
 </script>
 
 <svelte:head>
-	<title>LensLedger — Mi Perfil</title>
+	<title>Facturator.ai — Mi Perfil</title>
 </svelte:head>
 
 <main class="profile-page">
 	<div class="profile-page__wrap">
 		<header class="header">
-			<p class="header__eyebrow">LensLedger</p>
+			<p class="header__eyebrow">Facturator.ai</p>
 			<h1 class="header__title">Mi Perfil</h1>
 			<p class="header__sub">Visualiza y gestiona la información de tu cuenta y preferencias.</p>
 		</header>

@@ -67,7 +67,7 @@
 <svelte:window onclick={handleClickOutside} />
 
 <svelte:head>
-	<title>LensLedger</title>
+	<title>Facturator.ai</title>
 </svelte:head>
 
 <div class="layout">
@@ -75,7 +75,7 @@
 	<header class="topbar">
 		<div class="topbar__left">
 			<a href={resolve('/app/dashboard')} class="topbar__brand">
-				<span class="topbar__dot"></span>LensLedger
+				<span class="topbar__dot"></span>Facturator.ai
 			</a>
 			<div class="topbar__path">
 				/app/{activeId}

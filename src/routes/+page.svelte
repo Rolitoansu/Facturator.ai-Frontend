@@ -91,7 +91,7 @@
 </script>
 
 <svelte:head>
-	<title>LensLedger — Facturación Automática y Control de Gastos</title>
+	<title>Facturator.ai — Facturación Automática y Control de Gastos</title>
 </svelte:head>
 
 <div class="landing-layout">
@@ -99,7 +99,7 @@
 	<nav class="nav">
 		<div class="nav__inner">
 			<a class="nav__logo" href={resolve('/')}>
-				<span class="nav__logo-dot"></span>LensLedger
+				<span class="nav__logo-dot"></span>Facturator.ai
 			</a>
 			<div class="nav__links">
 				<a class="nav__link" href="#features">Características</a>
@@ -194,7 +194,7 @@
 						<span class="app-mockup__dot app-mockup__dot--red"></span>
 						<span class="app-mockup__dot app-mockup__dot--yellow"></span>
 						<span class="app-mockup__dot app-mockup__dot--green"></span>
-						<span class="app-mockup__title">lensledger.app/dashboard</span>
+						<span class="app-mockup__title">facturator.ai/app/dashboard</span>
 					</div>
 					<div class="app-mockup__body">
 						<!-- Mini metrics -->
@@ -262,7 +262,7 @@
 				<p class="section-label">01 — Características</p>
 				<h2 class="section-title">Olvídate de rellenar tablas a mano</h2>
 				<p class="section-sub">
-					LensLedger elimina la fricción de llevar la contabilidad personal. Sube una foto y observa
+					Facturator.ai elimina la fricción de llevar la contabilidad personal. Sube una foto y observa
 					lo rápido que se procesa la información.
 				</p>
 			</div>
@@ -313,7 +313,7 @@
 			<div class="section-header">
 				<p class="section-label">02 — Simulador de Escaneo</p>
 				<h2 class="section-title">Compruébalo en tiempo real</h2>
-				<p class="section-sub">Haz clic abajo para simular cómo LensLedger procesa un ticket real.</p>
+				<p class="section-sub">Haz clic abajo para simular cómo Facturator.ai procesa un ticket real.</p>
 			</div>
 
 			<div class="demo-box">
@@ -524,7 +524,7 @@
 		<div class="container">
 			<div class="section-header">
 				<p class="section-label">04 — Preguntas Frecuentes</p>
-				<h2 class="section-title">Resuelve tus dudas sobre LensLedger</h2>
+				<h2 class="section-title">Resuelve tus dudas sobre Facturator.ai</h2>
 			</div>
 
 			<div class="faqs__list">
@@ -559,7 +559,7 @@
 	<footer class="footer">
 		<div class="container footer__inner">
 			<div class="footer__brand">
-				<span class="footer__logo">LensLedger</span>
+				<span class="footer__logo">Facturator.ai</span>
 				<p class="footer__tagline">Organización financiera simplificada y automatizada.</p>
 			</div>
 			
@@ -574,7 +574,7 @@
 		</div>
 		<div class="footer__bottom">
 			<div class="container footer__bottom-inner">
-				<p class="footer__copy">© 2026 LensLedger. Todos los derechos reservados.</p>
+				<p class="footer__copy">© 2026 Facturator.ai. Todos los derechos reservados.</p>
 				<div class="footer__links">
 					<a href="#hero">Inicio</a>
 					<a href="#features">Características</a>

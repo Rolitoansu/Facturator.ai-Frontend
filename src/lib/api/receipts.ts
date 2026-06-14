@@ -1,27 +1,12 @@
-import { ReceiptStatus } from '$lib/types/api.types';
 import type { Receipt } from '$lib/types/api.types';
-import { delay } from '$lib/utils/async';
-import { createId } from '$lib/utils/id';
-import { mockReceipts } from './mock-data';
+import { apiFetch, apiUpload } from './client';
 
-export const getReceiptMocks = (): Receipt[] => [...mockReceipts];
+export async function getReceipts(): Promise<Receipt[]> {
+	return apiFetch<Receipt[]>('/api/receipts');
+}
 
-export async function uploadReceipt(file: File, userId: string): Promise<Receipt> {
-	if (!userId) {
-		throw new Error('userId is required');
-	}
-
-	await delay(650);
-
-	const receipt: Receipt = {
-		id: createId('rcpt'),
-		userId,
-		imageUrl: `/uploads/receipts/${encodeURIComponent(file.name)}`,
-		rawText: '',
-		status: ReceiptStatus.Processing,
-		createdAt: new Date().toISOString()
-	};
-
-	mockReceipts.unshift(receipt);
-	return receipt;
+export async function uploadReceipt(file: File): Promise<Receipt> {
+	const formData = new FormData();
+	formData.append('file', file);
+	return apiUpload<Receipt>('/api/receipts', formData);
 }

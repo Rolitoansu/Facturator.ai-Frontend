@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { mockHistoryReceipts } from '$lib/mock/lensledger';
+	import { transactionsStore } from '$lib/stores/transactions';
 	import { STATUS_MAP, receiptStatusLabel } from '$lib/constants/receipt-status';
 	import { categoriesStore } from '$lib/stores/categories';
 	import '$lib/styles/history.scss';
@@ -12,27 +12,21 @@
 	const itemsPerPage = 5;
 
 	// Helpers
-	const labelForMock = (s: (typeof mockHistoryReceipts)[number]['status']) => {
+	const labelForStatus = (s: string) => {
 		const status = STATUS_MAP[s];
 		if (!status) return 'error';
 		return receiptStatusLabel(status);
 	};
 
-	const parseAmount = (amtStr: string): number => {
-		const cleaned = amtStr.replace(/[€\s]/g, '').replace(',', '.');
-		const parsed = parseFloat(cleaned);
-		return isNaN(parsed) ? 0 : parsed;
-	};
-
 	const parseDate = (dateStr: string): number => {
-		const [day, month] = dateStr.split('/').map(Number);
-		// We assume 2026 as reference year matching constants/app.ts
-		return new Date(2026, month - 1, day).getTime();
+		// Date format from backend is typically "YYYY-MM-DD"
+		// If it's a timestamp we can just pass it to Date
+		return new Date(dateStr).getTime();
 	};
 
 	// Derived filtered list
 	const filteredReceipts = $derived.by(() => {
-		return mockHistoryReceipts.filter((receipt) => {
+		return $transactionsStore.items.filter((receipt) => {
 			const matchesSearch = receipt.merchant.toLowerCase().includes(searchQuery.toLowerCase());
 			const matchesCategory = selectedCategory === 'all' || receipt.category === selectedCategory;
 			return matchesSearch && matchesCategory;
@@ -47,9 +41,9 @@
 		} else if (sortBy === 'date-asc') {
 			list.sort((a, b) => parseDate(a.date) - parseDate(b.date));
 		} else if (sortBy === 'amount-desc') {
-			list.sort((a, b) => parseAmount(b.amount) - parseAmount(a.amount));
+			list.sort((a, b) => b.rawAmount - a.rawAmount);
 		} else if (sortBy === 'amount-asc') {
-			list.sort((a, b) => parseAmount(a.amount) - parseAmount(b.amount));
+			list.sort((a, b) => a.rawAmount - b.rawAmount);
 		} else if (sortBy === 'name-asc') {
 			list.sort((a, b) => a.merchant.localeCompare(b.merchant));
 		} else if (sortBy === 'name-desc') {
@@ -77,7 +71,7 @@
 <main class="history">
 	<div class="history__wrap">
 		<header class="header">
-			<p class="header__eyebrow">LensLedger</p>
+			<p class="header__eyebrow">Facturator.ai</p>
 			<h1 class="header__title">Historial</h1>
 			<p class="header__sub">Listado completo de tus recibos y tickets.</p>
 		</header>
@@ -110,7 +104,7 @@
 						<select class="toolbar__select" bind:value={selectedCategory}>
 							<option value="all">Todas las categorías</option>
 							{#each $categoriesStore as cat (cat.id)}
-								<option value={cat.id}>{cat.label}</option>
+								<option value={cat.slug}>{cat.label}</option>
 							{/each}
 						</select>
 						<svg
@@ -156,7 +150,7 @@
 						No se encontraron recibos que coincidan con la búsqueda o filtro.
 					</div>
 				{:else}
-					{#each paginatedReceipts as r (r.merchant + r.date + r.amount)}
+					{#each paginatedReceipts as r (r.id)}
 						<article class="receipt-item">
 							<div class="receipt-item__details">
 								<p class="receipt-item__merchant" title={r.merchant}>{r.merchant}</p>
@@ -167,7 +161,7 @@
 							</div>
 							<div class="receipt-item__status">
 								<p class="receipt-item__status-label">estado</p>
-								<p class="receipt-item__status-value">{labelForMock(r.status)}</p>
+								<p class="receipt-item__status-value">{labelForStatus(r.status)}</p>
 							</div>
 						</article>
 					{/each}

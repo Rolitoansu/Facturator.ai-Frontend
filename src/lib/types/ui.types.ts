@@ -18,7 +18,6 @@ export interface ReceiptCardProps {
 }
 
 export interface UploadDropzoneProps {
-	userId: string;
 	onUploaded?: (receipt: Receipt) => void;
 }
 

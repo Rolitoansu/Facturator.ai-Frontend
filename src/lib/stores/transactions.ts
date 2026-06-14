@@ -7,14 +7,12 @@ import type {
 	TransactionUpdate,
 	TransactionsState
 } from '$lib/types/transactions.types';
-import { getCurrentUserMock } from '$lib/api/user';
-import { getTransactions } from '$lib/api/transactions';
+import { getTransactions as fetchTransactions } from '$lib/api/transactions';
 import { mapTransaction, receiptToProcessingItem } from '$lib/utils/receipt';
 
 export type { TransactionItem, TransactionUpdate, TransactionsState };
 
 const createTransactionsStore = () => {
-	const currentUser = getCurrentUserMock();
 	const { subscribe, set, update } = writable<TransactionsState>({
 		items: [],
 		loading: true,
@@ -25,7 +23,7 @@ const createTransactionsStore = () => {
 		set({ items: [], loading: true, error: null });
 
 		try {
-			const items = await getTransactions(currentUser.id);
+			const items = await fetchTransactions();
 			set({ items: items.map(mapTransaction), loading: false, error: null });
 		} catch (error) {
 			set({
@@ -72,8 +70,6 @@ const createTransactionsStore = () => {
 			)
 		}));
 	};
-
-	void load();
 
 	return {
 		subscribe,

@@ -1,10 +1,15 @@
-// Re-exporta todos los tipos del dominio de la API
-export { ReceiptStatus } from '$lib/types/api.types';
-export type { User, Receipt, Transaction, Budget } from '$lib/types/api.types';
+// API client
+export { apiFetch, apiUpload } from './client';
 
-// Re-exporta funciones y datos de cada módulo
-export { getCurrentUserMock } from './user';
-export { getReceiptMocks, uploadReceipt } from './receipts';
-export { getTransactions } from './transactions';
-export { getBudgets } from './budgets';
-export { mockUserId, mockReceipts, mockTransactions, mockBudgets } from './mock-data';
+// Domain modules
+export { getReceipts, uploadReceipt } from './receipts';
+export { getTransactions, deleteTransactionsByCategory, reassignTransactions } from './transactions';
+export { getBudgets, createBudget, updateBudget, deleteBudget } from './budgets';
+export { getCategories, createCategory } from './categories';
+export { getProfile, updateProfile, getSubscription, createCheckoutSession } from './profile';
+
+// Re-export types
+export { ReceiptStatus } from '$lib/types/api.types';
+export type { Receipt, Transaction, Budget } from '$lib/types/api.types';
+export type { CategoryAPI } from './categories';
+export type { UserProfile, SubscriptionInfo } from './profile';
