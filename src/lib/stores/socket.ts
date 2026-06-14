@@ -4,18 +4,19 @@ import { PUBLIC_API_URL } from '$env/static/public';
 import { ReceiptStatus } from '$lib/types/api.types';
 import type {
 	SocketStatus,
-	SocketEventType,
 	SocketEvent,
 	ReceiptProcessedPayload
 } from '$lib/types/socket.types';
 import { transactionsStore } from '$lib/stores/transactions';
-import type { TransactionUpdate } from '$lib/types/transactions.types';
 
-export type { SocketStatus, SocketEventType, SocketEvent, ReceiptProcessedPayload };
+export type { SocketStatus, SocketEvent, ReceiptProcessedPayload };
 
 const { subscribe, set } = writable<SocketStatus>('disconnected');
 
 const listeners = new Set<(event: SocketEvent) => void>();
+let ws: WebSocket | null = null;
+let currentUserId: string | null = null;
+let reconnectTimer: any = null;
 
 let ws: WebSocket | null = null;
 let reconnectTimer: ReturnType<typeof setTimeout> | null = null;

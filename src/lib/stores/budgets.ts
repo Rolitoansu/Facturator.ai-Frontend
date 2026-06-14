@@ -61,6 +61,8 @@ const createBudgetsStore = () => {
 		}
 	};
 
+	void load();
+
 	return {
 		subscribe,
 		reload: load,
@@ -72,3 +74,4 @@ const createBudgetsStore = () => {
 };
 
 export const budgetsStore = createBudgetsStore();
+

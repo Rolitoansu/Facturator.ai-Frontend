@@ -186,11 +186,12 @@
 .modal-overlay {
 	position: fixed;
 	inset: 0;
-	background-color: rgba(0, 0, 0, 0.6);
+	background-color: rgba(0, 0, 0, 0.5);
 	backdrop-filter: blur(0.25rem);
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	padding: 1rem;
 	z-index: 1000;
 	animation: fadeIn 0.2s ease-out;
 }
@@ -201,7 +202,7 @@
 	border-radius: 0.75rem;
 	width: 100%;
 	max-width: 28rem;
-	box-shadow: 0 1rem 2.5rem rgba(0, 0, 0, 0.6);
+	box-shadow: var(--card-glass-shadow);
 	overflow: hidden;
 	animation: scaleUp 0.2s cubic-bezier(0.16, 1, 0.3, 1);
 	display: flex;

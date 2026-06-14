@@ -10,3 +10,4 @@ export async function uploadReceipt(file: File): Promise<Receipt> {
 	formData.append('file', file);
 	return apiUpload<Receipt>('/api/receipts', formData);
 }
+

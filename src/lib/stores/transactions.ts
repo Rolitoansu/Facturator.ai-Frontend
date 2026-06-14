@@ -55,20 +55,30 @@ const createTransactionsStore = () => {
 		}));
 	};
 
-	const deleteTransactionsByCategory = (category: string) => {
-		update((state) => ({
-			...state,
-			items: state.items.filter((item) => item.category !== category)
-		}));
+	const deleteTransactionsByCategory = async (category: string) => {
+		try {
+			await apiDeleteTransactionsByCategory(category);
+			update((state) => ({
+				...state,
+				items: state.items.filter((item) => item.category !== category)
+			}));
+		} catch (error) {
+			console.error('Error deleting transactions by category:', error);
+		}
 	};
 
-	const reassignCategory = (oldCategory: string, newCategory: string) => {
-		update((state) => ({
-			...state,
-			items: state.items.map((item) =>
-				item.category === oldCategory ? { ...item, category: newCategory } : item
-			)
-		}));
+	const reassignCategory = async (oldCategory: string, newCategory: string) => {
+		try {
+			await apiReassignTransactionsCategory(oldCategory, newCategory);
+			update((state) => ({
+				...state,
+				items: state.items.map((item) =>
+					item.category === oldCategory ? { ...item, category: newCategory } : item
+				)
+			}));
+		} catch (error) {
+			console.error('Error reassigning transactions category:', error);
+		}
 	};
 
 	return {
