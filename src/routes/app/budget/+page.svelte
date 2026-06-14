@@ -78,10 +78,11 @@
 		isDeleteModalOpen = true;
 	};
 
-	const handleCreate = () => {
-		if (newCategory === 'new_custom') {
+	const handleCreate = async () => {
+		const isCustomCategory = newCategory === 'new_custom';
+		if (isCustomCategory) {
 			if (!customCategoryName || newLimit <= 0) return;
-			const id = categoriesStore.addCategory(customCategoryName, customCategoryColor);
+			const id = await categoriesStore.addCategory(customCategoryName, customCategoryColor);
 			budgetsStore.addBudget(id, newLimit);
 		} else {
 			if (!newCategory || newLimit <= 0) return;

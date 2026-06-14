@@ -7,7 +7,12 @@ import type {
 	TransactionUpdate,
 	TransactionsState
 } from '$lib/types/transactions.types';
-import { getTransactions as fetchTransactions } from '$lib/api/transactions';
+import {
+	getTransactions as fetchTransactions,
+	deleteTransactionsByCategory as apiDeleteTransactionsByCategory,
+	reassignTransactions as apiReassignTransactionsCategory,
+	updateTransaction as apiUpdateTransaction
+} from '$lib/api/transactions';
 import { mapTransaction, receiptToProcessingItem } from '$lib/utils/receipt';
 
 export type { TransactionItem, TransactionUpdate, TransactionsState };
@@ -81,13 +86,29 @@ const createTransactionsStore = () => {
 		}
 	};
 
+	const updateTransactionItem = async (id: string, updates: Partial<TransactionItem>) => {
+		try {
+			await apiUpdateTransaction(id, updates);
+			update((state) => ({
+				...state,
+				items: state.items.map((item) =>
+					item.id === id ? { ...item, ...updates, needsReview: false } : item
+				)
+			}));
+		} catch (error) {
+			console.error('Error updating transaction:', error);
+			throw error;
+		}
+	};
+
 	return {
 		subscribe,
 		reload: load,
 		addProcessingReceipt,
 		updateReceiptStatus,
 		deleteTransactionsByCategory,
-		reassignCategory
+		reassignCategory,
+		updateTransactionItem
 	};
 };
 

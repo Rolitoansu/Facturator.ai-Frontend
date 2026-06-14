@@ -2,6 +2,8 @@
 	import { transactionsStore } from '$lib/stores/transactions';
 	import { STATUS_MAP, receiptStatusLabel } from '$lib/constants/receipt-status';
 	import { categoriesStore } from '$lib/stores/categories';
+	import type { TransactionItem } from '$lib/types/transactions.types';
+	import { CircleAlert } from 'lucide-svelte';
 	import '$lib/styles/history.scss';
 
 	// State variables
@@ -10,6 +12,31 @@
 	let sortBy = $state('date-desc');
 	let currentPage = $state(1);
 	const itemsPerPage = 5;
+
+	// Review Modal State
+	let reviewModalOpen = $state(false);
+	let reviewingTransaction = $state<TransactionItem | null>(null);
+	let newReviewCategory = $state('');
+
+	const openReview = (r: TransactionItem) => {
+		reviewingTransaction = r;
+		newReviewCategory = r.category;
+		reviewModalOpen = true;
+	};
+
+	const submitReview = async () => {
+		if (!reviewingTransaction) return;
+		try {
+			await transactionsStore.updateTransactionItem(reviewingTransaction.id, {
+				category: newReviewCategory,
+				needsReview: false
+			});
+			reviewModalOpen = false;
+			reviewingTransaction = null;
+		} catch (e) {
+			console.error(e);
+		}
+	};
 
 	// Helpers
 	const labelForStatus = (s: string) => {
@@ -41,9 +68,9 @@
 		} else if (sortBy === 'date-asc') {
 			list.sort((a, b) => parseDate(a.date) - parseDate(b.date));
 		} else if (sortBy === 'amount-desc') {
-			list.sort((a, b) => b.rawAmount - a.rawAmount);
+			list.sort((a, b) => b.amount - a.amount);
 		} else if (sortBy === 'amount-asc') {
-			list.sort((a, b) => a.rawAmount - b.rawAmount);
+			list.sort((a, b) => a.amount - b.amount);
 		} else if (sortBy === 'name-asc') {
 			list.sort((a, b) => a.merchant.localeCompare(b.merchant));
 		} else if (sortBy === 'name-desc') {
@@ -153,7 +180,14 @@
 					{#each paginatedReceipts as r (r.id)}
 						<article class="receipt-item">
 							<div class="receipt-item__details">
-								<p class="receipt-item__merchant" title={r.merchant}>{r.merchant}</p>
+								<p class="receipt-item__merchant" title={r.merchant}>
+									{r.merchant}
+									{#if r.needsReview}
+										<span class="badge badge--yellow" style="margin-left: 0.5rem; display: inline-flex; align-items: center; gap: 0.25rem; font-size: 0.7rem;">
+											<CircleAlert size={12} /> IA Dudosa
+										</span>
+									{/if}
+								</p>
 								<p class="receipt-item__amount">{r.amount}</p>
 								<p class="receipt-item__meta">
 									{categoriesStore.getCategoryLabel(r.category)} · {r.date}
@@ -161,7 +195,14 @@
 							</div>
 							<div class="receipt-item__status">
 								<p class="receipt-item__status-label">estado</p>
-								<p class="receipt-item__status-value">{labelForStatus(r.status)}</p>
+								<p class="receipt-item__status-value">
+									{labelForStatus(r.status)}
+									{#if r.needsReview}
+										<button class="btn btn--secondary" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; margin-left: 0.5rem; cursor: pointer;" onclick={() => openReview(r)}>
+											Corregir
+										</button>
+									{/if}
+								</p>
 							</div>
 						</article>
 					{/each}
@@ -195,4 +236,31 @@
 			{/if}
 		</section>
 	</div>
+
+	<!-- Modal de Revisión -->
+	{#if reviewModalOpen && reviewingTransaction}
+		<div class="modal-overlay" onclick={() => (reviewModalOpen = false)}>
+			<div class="modal-content" onclick={(e) => e.stopPropagation()}>
+				<h3 class="modal-title" style="margin-bottom: 0.5rem; color: var(--color-warning); display: flex; align-items: center; gap: 0.5rem;">
+					<CircleAlert size={20} />
+					Revisión Requerida
+				</h3>
+				<p style="font-size: 0.875rem; color: var(--text-muted); margin-bottom: 1.5rem;">
+					La IA no está completamente segura de la categoría para el comercio <strong>{reviewingTransaction.merchant}</strong> ({reviewingTransaction.amount}€). Por favor, confirma o corrige la categoría para ayudar a entrenar el modelo.
+				</p>
+				<div class="form-group" style="margin-bottom: 1.5rem;">
+					<label class="form-group__label" for="review-category">Categoría Correcta</label>
+					<select id="review-category" class="form-group__select" bind:value={newReviewCategory}>
+						{#each $categoriesStore as cat (cat.id)}
+							<option value={cat.slug}>{cat.label}</option>
+						{/each}
+					</select>
+				</div>
+				<div class="modal-actions" style="display: flex; gap: 1rem; justify-content: flex-end;">
+					<button class="btn btn--outline" onclick={() => (reviewModalOpen = false)}>Cancelar</button>
+					<button class="btn btn--accent" onclick={submitReview}>Confirmar</button>
+				</div>
+			</div>
+		</div>
+	{/if}
 </main>

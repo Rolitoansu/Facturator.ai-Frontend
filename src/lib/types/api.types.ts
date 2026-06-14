@@ -29,6 +29,8 @@ export interface Transaction {
 	merchant: string;
 	category: string;
 	date: string;
+	needsReview?: boolean;
+	confidence?: number;
 }
 
 export interface Budget {

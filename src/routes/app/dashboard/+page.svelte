@@ -9,7 +9,7 @@
 	import { budgetsStore } from '$lib/stores/budgets';
 	import '$lib/styles/dashboard.scss';
 
-	const totalMonth = $derived($transactionsStore.items.reduce((sum, txn) => sum + txn.rawAmount, 0));
+	const totalMonth = $derived($transactionsStore.items.reduce((sum, txn) => sum + txn.amount, 0));
 	const receiptsCount = $derived($transactionsStore.items.length);
 
 	const budgetTotal = $derived($budgetsStore.reduce((sum, b) => sum + b.limitAmount, 0));
@@ -20,7 +20,7 @@
 		for (const txn of $transactionsStore.items) {
 			const cat = txn.category;
 			if (!spentByCat[cat]) spentByCat[cat] = 0;
-			spentByCat[cat] += txn.rawAmount;
+			spentByCat[cat] += txn.amount;
 		}
 		return spentByCat;
 	});

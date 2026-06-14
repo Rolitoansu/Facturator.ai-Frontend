@@ -7,6 +7,7 @@ import type {
 	SocketEvent,
 	ReceiptProcessedPayload
 } from '$lib/types/socket.types';
+import type { TransactionUpdate } from '$lib/types/transactions.types';
 import { transactionsStore } from '$lib/stores/transactions';
 
 export type { SocketStatus, SocketEvent, ReceiptProcessedPayload };
@@ -14,10 +15,6 @@ export type { SocketStatus, SocketEvent, ReceiptProcessedPayload };
 const { subscribe, set } = writable<SocketStatus>('disconnected');
 
 const listeners = new Set<(event: SocketEvent) => void>();
-let ws: WebSocket | null = null;
-let currentUserId: string | null = null;
-let reconnectTimer: any = null;
-
 let ws: WebSocket | null = null;
 let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
 let currentUserId: string | null = null;

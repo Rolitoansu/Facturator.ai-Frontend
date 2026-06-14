@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { User, Settings, Lock, CircleCheck, Save } from 'lucide-svelte';
+	import { User, Settings, Lock, CircleCheck, Save, Crown } from 'lucide-svelte';
 	import '$lib/styles/profile.scss';
 
 	let { data } = $props();
@@ -91,6 +91,48 @@
 		</section>
 
 		<div class="details-section">
+			<!-- Suscripción MVP -->
+			<section class="details-card">
+				<header class="details-card__header">
+					<Crown size={20} class="details-card__icon" style="color: var(--color-warning);" />
+					<h2 class="details-card__title">Mi Plan Actual</h2>
+				</header>
+				<div class="details-card__content" style="padding: 1.5rem; background: var(--bg-surface-elevated); border-radius: var(--radius-md); border: 1px solid var(--border-light); margin-bottom: 1.5rem;">
+					<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+						<div>
+							<h3 style="font-size: 1.25rem; font-weight: 600; color: var(--text-main); display: flex; align-items: center; gap: 0.5rem;">
+								Pro (MVP Early Access)
+								<span style="font-size: 0.75rem; background: var(--color-success); color: white; padding: 2px 8px; border-radius: 12px;">Activo</span>
+							</h3>
+							<p style="font-size: 0.875rem; color: var(--text-muted); margin-top: 0.25rem;">
+								¡Gracias por participar en el primer MVP de Facturator.ai!
+							</p>
+						</div>
+						<div style="text-align: right;">
+							<p style="font-size: 1.5rem; font-weight: 700; color: var(--text-main);">0,00 € <span style="font-size: 1rem; font-weight: 400; color: var(--text-muted);">/ mes</span></p>
+						</div>
+					</div>
+					
+					<div style="background: rgba(var(--color-primary-rgb), 0.05); padding: 1rem; border-radius: var(--radius-sm); border: 1px dashed var(--color-primary);">
+						<h4 style="font-size: 0.875rem; font-weight: 600; color: var(--color-primary); margin-bottom: 0.5rem;">Beneficios incluidos en tu cuenta:</h4>
+						<ul style="list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: 0.5rem;">
+							<li style="font-size: 0.875rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+								<CircleCheck size={14} style="color: var(--color-success);" />
+								Límite de subidas <strong>ilimitado</strong> para facturas.
+							</li>
+							<li style="font-size: 0.875rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+								<CircleCheck size={14} style="color: var(--color-success);" />
+								Extracción de datos con IA Premium.
+							</li>
+							<li style="font-size: 0.875rem; color: var(--text-secondary); display: flex; align-items: center; gap: 0.5rem;">
+								<CircleCheck size={14} style="color: var(--color-success);" />
+								Sin coste durante la fase Beta / MVP.
+							</li>
+						</ul>
+					</div>
+				</div>
+			</section>
+
 			<!-- Perfil -->
 			<section class="details-card">
 				<header class="details-card__header">

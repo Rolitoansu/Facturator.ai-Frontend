@@ -3,7 +3,7 @@
 	import type { UploadDropzoneProps } from '$lib/types/ui.types';
 	import '$lib/styles/UploadDropzone.scss';
 
-	let { userId, onUploaded }: UploadDropzoneProps = $props();
+	let { onUploaded }: UploadDropzoneProps = $props();
 
 	let dragActive = $state(false);
 	let selectedFile = $state<File | null>(null);
@@ -79,7 +79,7 @@
 		errorMessage = null;
 		dragActive = false;
 		try {
-			const receipt = await uploadReceipt(selectedFile, userId);
+			const receipt = await uploadReceipt(selectedFile);
 			onUploaded?.(receipt);
 			setFile(null);
 		} catch (error) {
