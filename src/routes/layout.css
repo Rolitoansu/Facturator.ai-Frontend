@@ -1,124 +1,146 @@
+/* ── FONT FACES ────────────────────────────────────────────────────────────── */
+@font-face {
+	font-family: 'Space Grotesk';
+	src: url('/fonts/SpaceGrotesk-Variable.woff2') format('woff2');
+	font-weight: 300 700;
+	font-display: swap;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('/fonts/JetBrainsMono-Regular.woff2') format('woff2');
+	font-weight: 400;
+	font-display: swap;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('/fonts/JetBrainsMono-Medium.woff2') format('woff2');
+	font-weight: 500;
+	font-display: swap;
+	font-style: normal;
+}
+
+@font-face {
+	font-family: 'JetBrains Mono';
+	src: url('/fonts/JetBrainsMono-Bold.woff2') format('woff2');
+	font-weight: 700;
+	font-display: swap;
+	font-style: normal;
+}
+
+/* Keep legacy fonts as fallbacks */
 @font-face {
 	font-family: 'Instrument Sans';
 	src: url('/fonts/Instrument_Sans.ttf') format('truetype');
 	font-weight: 400;
-	font-style: swap;
+	font-display: swap;
 }
 
 @font-face {
 	font-family: 'DMSerifDisplay';
 	src: url('/fonts/DMSerifDisplay.ttf') format('truetype');
 	font-weight: 400;
-	font-style: swap;
+	font-display: swap;
 }
 
+/* ── DESIGN TOKENS — DARK (default) ───────────────────────────────────────── */
 :root {
-	--border: #2a2e35;
-	--color-bg: #0b0d0f;
-	--color-bg2: #111316;
-	--color-bg3: #181b1f;
-	--color-surface: #1e2126;
-	--color-border: #2a2e35;
-	--color-border2: #353b44;
-	--color-heading: #eef1f5;
-	--color-body: #c8d0da;
-	--color-subtle: #8b95a3;
-	--color-muted: #5a6170;
-	--color-blur-bg: rgba(11, 13, 15, 0.85);
+	/* Backgrounds */
+	--color-bg: #060809;
+	--color-bg2: #0d1117;
+	--color-bg3: #151b23;
+	--color-surface: #161b22;
 
-	/* Dock / glassmorphism tokens — dark */
-	--dock-bg: rgba(30, 33, 38, 0.7);
+	/* Borders */
+	--color-border: rgba(255, 255, 255, 0.07);
+	--color-border2: rgba(255, 255, 255, 0.13);
+	--border: rgba(255, 255, 255, 0.07);
+
+	/* Text */
+	--color-heading: #f0f6fc;
+	--color-body: #b0bac5;
+	--color-subtle: #7d8590;
+	--color-muted: #484f58;
+
+	/* Blur background */
+	--color-blur-bg: rgba(6, 8, 9, 0.88);
+
+	/* Accent */
+	--color-accent: #7ee787;
+	--color-accent-bright: #a5ff0a;
+	--color-cyan: #58a6ff;
+
+	/* Dock / glassmorphism */
+	--dock-bg: rgba(13, 17, 23, 0.75);
 	--dock-border: rgba(255, 255, 255, 0.08);
-	--dock-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.5), inset 0 1px 1px rgba(255, 255, 255, 0.06);
-	--dock-link-color: rgba(255, 255, 255, 0.45);
+	--dock-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+	--dock-link-color: rgba(255, 255, 255, 0.35);
 
-	/* Card / glass tokens — dark */
-	--card-glass-bg: rgba(255, 255, 255, 0.03);
-	--card-glass-border: rgba(255, 255, 255, 0.05);
-	--card-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
-	--card-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.05);
+	/* Card / glass */
+	--card-glass-bg: rgba(15, 20, 25, 0.6);
+	--card-glass-border: rgba(255, 255, 255, 0.08);
+	--card-glass-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+	--card-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 
-	/* Input tokens — dark */
-	--input-bg: rgba(0, 0, 0, 0.25);
+	/* Input */
+	--input-bg: rgba(0, 0, 0, 0.3);
 	--input-border: rgba(255, 255, 255, 0.08);
-	--input-focus-bg: rgba(0, 0, 0, 0.35);
+	--input-focus-bg: rgba(0, 0, 0, 0.45);
 	--input-placeholder: rgba(255, 255, 255, 0.2);
 
-	/* Hover subtle — dark */
+	/* Hover */
 	--hover-subtle: rgba(255, 255, 255, 0.04);
 	--hover-mid: rgba(255, 255, 255, 0.08);
 
-	/* Details card — dark */
+	/* Details card */
 	--details-card-bg: rgba(255, 255, 255, 0.02);
-	--details-card-border: rgba(255, 255, 255, 0.04);
-	--details-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+	--details-card-border: rgba(255, 255, 255, 0.05);
+	--details-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
 	--details-divider: rgba(255, 255, 255, 0.05);
 	--details-form-divider: rgba(255, 255, 255, 0.05);
 
-	/* Toggle — dark */
-	--toggle-bg: rgba(0, 0, 0, 0.35);
+	/* Toggle */
+	--toggle-bg: rgba(0, 0, 0, 0.4);
 	--toggle-border: rgba(255, 255, 255, 0.1);
-	--toggle-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.25);
+	--toggle-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+
+	/* Easing curves */
+	--ease-spring: cubic-bezier(0.16, 1, 0.3, 1);
+	--ease-out-expo: cubic-bezier(0.19, 1, 0.22, 1);
+	--ease-smooth: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-:root[data-theme='light'] {
-	--border: #e2e8f0;
-	--color-bg: #f8fafc;
-	--color-bg2: #ffffff;
-	--color-bg3: #f1f5f9;
-	--color-surface: #ffffff;
-	--color-border: #cbd5e1;
-	--color-border2: #e2e8f0;
-	--color-heading: #0f172a;
-	--color-body: #334155;
-	--color-subtle: #475569;
-	--color-muted: #64748b;
-	--color-blur-bg: rgba(248, 250, 252, 0.9);
+/* ── DESIGN TOKENS — NO LIGHT THEME (Premium Dark Only) ────────────────────── */
 
-	/* Dock / glassmorphism tokens — light */
-	--dock-bg: rgba(255, 255, 255, 0.75);
-	--dock-border: rgba(0, 0, 0, 0.08);
-	--dock-shadow: 0 1rem 3rem rgba(0, 0, 0, 0.12), inset 0 1px 1px rgba(255, 255, 255, 0.9);
-	--dock-link-color: rgba(0, 0, 0, 0.4);
+/* ── GLOBAL BASE ──────────────────────────────────────────────────────────── */
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
 
-	/* Card / glass tokens — light */
-	--card-glass-bg: rgba(255, 255, 255, 0.7);
-	--card-glass-border: rgba(0, 0, 0, 0.06);
-	--card-glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.08);
-	--card-glass-inner: inset 0 1px 0 rgba(255, 255, 255, 0.9);
-
-	/* Input tokens — light */
-	--input-bg: rgba(255, 255, 255, 0.8);
-	--input-border: rgba(0, 0, 0, 0.12);
-	--input-focus-bg: #ffffff;
-	--input-placeholder: rgba(0, 0, 0, 0.3);
-
-	/* Hover subtle — light */
-	--hover-subtle: rgba(0, 0, 0, 0.03);
-	--hover-mid: rgba(0, 0, 0, 0.06);
-
-	/* Details card — light */
-	--details-card-bg: rgba(0, 0, 0, 0.02);
-	--details-card-border: rgba(0, 0, 0, 0.07);
-	--details-card-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
-	--details-divider: rgba(0, 0, 0, 0.07);
-	--details-form-divider: rgba(0, 0, 0, 0.07);
-
-	/* Toggle — light */
-	--toggle-bg: rgba(0, 0, 0, 0.08);
-	--toggle-border: rgba(0, 0, 0, 0.12);
-	--toggle-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.06);
+html {
+	scroll-behavior: smooth;
+	-webkit-font-smoothing: antialiased;
+	-moz-osx-font-smoothing: grayscale;
+	text-rendering: optimizeLegibility;
 }
 
 body {
 	background: var(--color-bg);
 	color: var(--color-body);
-	font-family: 'Instrument Sans';
+	font-family: 'Space Grotesk', 'Instrument Sans', system-ui, sans-serif;
+	line-height: 1.6;
+	margin: 0;
 	transition:
-		background-color 0.3s ease,
-		color 0.3s ease;
+		background-color 0.4s var(--ease-smooth),
+		color 0.4s var(--ease-smooth);
 }
 
+/* Subtle grid background — more refined */
 body::after {
 	content: '';
 	position: fixed;
@@ -127,30 +149,118 @@ body::after {
 		linear-gradient(var(--border) 1px, transparent 1px),
 		linear-gradient(90deg, var(--border) 1px, transparent 1px);
 	background-size: 80px 80px;
-	opacity: 0.15;
+	opacity: 0.35;
 	pointer-events: none;
+	z-index: 0;
 }
 
-/* View Transitions API Global Styles */
+/* Grain texture — extremely subtle */
+body::before {
+	content: '';
+	position: fixed;
+	inset: 0;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+	opacity: 0.018;
+	pointer-events: none;
+	z-index: 9999;
+}
+
+/* ── SCROLL-DRIVEN REVEAL ANIMATIONS ──────────────────────────────────────── */
+@keyframes reveal-up {
+	from {
+		opacity: 0;
+		transform: translateY(3rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
+	}
+}
+
+@keyframes reveal-scale {
+	from {
+		opacity: 0;
+		transform: scale(0.92);
+	}
+	to {
+		opacity: 1;
+		transform: scale(1);
+	}
+}
+
+@keyframes reveal-slide-right {
+	from {
+		opacity: 0;
+		transform: translateX(-2rem);
+	}
+	to {
+		opacity: 1;
+		transform: translateX(0);
+	}
+}
+
+/* Native CSS scroll-driven animations (Chrome 115+, Edge 115+, Safari 26+) */
+@media (prefers-reduced-motion: no-preference) {
+	@supports ((animation-timeline: view()) and (animation-range: entry)) {
+		.reveal {
+			animation: reveal-up auto linear backwards;
+			animation-timeline: view();
+			animation-range: entry 0% entry 100%;
+		}
+
+		.reveal--scale {
+			animation: reveal-scale auto linear backwards;
+			animation-timeline: view();
+			animation-range: entry 0% entry 100%;
+		}
+
+		.reveal--slide {
+			animation: reveal-slide-right auto linear backwards;
+			animation-timeline: view();
+			animation-range: entry 0% entry 100%;
+		}
+
+		/* Staggered children */
+		.reveal-stagger > * {
+			animation: reveal-up auto linear backwards;
+			animation-timeline: view();
+			animation-range: entry 0% entry 100%;
+		}
+	}
+}
+
+/* Reduced motion: instant appearance */
+@media (prefers-reduced-motion: reduce) {
+	.reveal,
+	.reveal--scale,
+	.reveal--slide,
+	.reveal-stagger > * {
+		animation: none !important;
+		opacity: 1 !important;
+		transform: none !important;
+	}
+}
+
+/* ── VIEW TRANSITIONS ─────────────────────────────────────────────────────── */
 ::view-transition-old(root),
 ::view-transition-new(root) {
-	animation-duration: 0.4s;
-	animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+	animation-duration: 0.35s;
+	animation-timing-function: var(--ease-spring);
 	animation-fill-mode: both;
 }
 
 ::view-transition-old(root) {
-	animation-name: fade-out;
+	animation-name: vt-fade-out;
 }
 ::view-transition-new(root) {
-	animation-name: fade-in;
+	animation-name: vt-fade-in;
 }
 
-@keyframes fade-in {
+@keyframes vt-fade-in {
 	from {
 		opacity: 0;
-		filter: blur(4px);
-		transform: scale(0.98);
+		filter: blur(3px);
+		transform: scale(0.985);
 	}
 	to {
 		opacity: 1;
@@ -159,7 +269,7 @@ body::after {
 	}
 }
 
-@keyframes fade-out {
+@keyframes vt-fade-out {
 	from {
 		opacity: 1;
 		filter: blur(0);
@@ -167,7 +277,25 @@ body::after {
 	}
 	to {
 		opacity: 0;
-		filter: blur(4px);
-		transform: scale(1.02);
+		filter: blur(3px);
+		transform: scale(1.015);
 	}
+}
+
+/* ── FOCUS STYLES ─────────────────────────────────────────────────────────── */
+:focus-visible {
+	outline: 2px solid var(--color-accent);
+	outline-offset: 2px;
+}
+
+/* ── SELECTION ────────────────────────────────────────────────────────────── */
+::selection {
+	background: rgba(126, 231, 135, 0.25);
+	color: var(--color-heading);
+}
+
+/* ── SCROLLBAR ────────────────────────────────────────────────────────────── */
+:root {
+	scrollbar-color: var(--color-muted) transparent;
+	scrollbar-width: thin;
 }

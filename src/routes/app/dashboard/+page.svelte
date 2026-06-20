@@ -7,6 +7,7 @@
 	import { formatCurrency } from '$lib/utils/currency';
 	import { transactionToReceipt } from '$lib/utils/receipt';
 	import { budgetsStore } from '$lib/stores/budgets';
+	import { glowTracking, tilt } from '$lib/actions/interactions';
 	import '$lib/styles/dashboard.scss';
 
 	const totalMonth = $derived($transactionsStore.items.reduce((sum, txn) => sum + txn.amount, 0));
@@ -39,21 +40,21 @@
 		<section class="dashboard-layout">
 			<div class="dashboard-layout__content">
 				<div class="metrics">
-					<div class="metric">
+					<div class="metric" use:glowTracking use:tilt={{ intensity: 5 }}>
 						<p class="metric__label">Total mes</p>
 						<p class="metric__val">{formatCurrency(totalMonth)}</p>
 					</div>
-					<div class="metric">
+					<div class="metric" use:glowTracking use:tilt={{ intensity: 5 }}>
 						<p class="metric__label">Disponible</p>
 						<p class="metric__val metric__val--success">{formatCurrency(available)}</p>
 					</div>
-					<div class="metric">
+					<div class="metric" use:glowTracking use:tilt={{ intensity: 5 }}>
 						<p class="metric__label">Recibos</p>
 						<p class="metric__val">{receiptsCount}</p>
 					</div>
 				</div>
 
-				<div class="panel">
+				<div class="panel bento-card" use:glowTracking>
 					<h2 class="panel__title">Por categoría</h2>
 					<div class="panel__grid">
 						{#if activeCategories.length === 0}
@@ -74,7 +75,7 @@
 				</div>
 			</div>
 
-			<aside class="sidebar-panel">
+			<aside class="sidebar-panel bento-card" use:glowTracking>
 				<div class="sidebar-panel__header">
 					<h2 class="sidebar-panel__title">Recibos recientes</h2>
 					<span class="sidebar-panel__count">{receiptsCount} items</span>

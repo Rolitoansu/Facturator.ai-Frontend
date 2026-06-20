@@ -3,9 +3,13 @@
 	import type { BudgetBarProps } from '$lib/types/ui.types';
 	import { formatAmount } from '$lib/utils/currency';
 	import { AlertCircle, AlertTriangle } from 'lucide-svelte';
+	import { onMount } from 'svelte';
+	import gsap from 'gsap';
 	import '$lib/styles/BudgetBarWidget.scss';
 
 	const { cat, label, spent, limit, month = 'Mes actual' }: BudgetBarProps = $props();
+
+	let barElement: HTMLDivElement;
 
 	const stats = $derived.by(() => {
 		const pct = limit > 0 ? spent / limit : 0;
@@ -27,6 +31,14 @@
 			diffAmount,
 			statusModifier
 		};
+	});
+
+	onMount(() => {
+		gsap.fromTo(
+			barElement,
+			{ width: '0%' },
+			{ width: `${stats.progressWidth}%`, duration: 1.2, ease: 'power3.out', delay: 0.2 }
+		);
 	});
 </script>
 
@@ -52,7 +64,7 @@
 	</header>
 
 	<div class="budget-bar__track">
-		<div class="budget-bar__fill" style="width: {stats.progressWidth}%;"></div>
+		<div bind:this={barElement} class="budget-bar__fill" style="width: {stats.progressWidth}%;"></div>
 	</div>
 
 	{#if stats.isOver}

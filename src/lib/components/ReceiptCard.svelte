@@ -4,6 +4,7 @@
 	import { STATUS_LABELS } from '$lib/constants/receipt-status';
 	import { extractMerchant, extractAmount } from '$lib/utils/receipt';
 	import { formatDate } from '$lib/utils/date';
+	import { glowTracking } from '$lib/actions/interactions';
 	import '$lib/styles/ReceiptCard.scss';
 
 	const { receipt }: ReceiptCardProps = $props();
@@ -22,7 +23,7 @@
 	});
 </script>
 
-<article class="receipt-card">
+<article class="receipt-card" use:glowTracking>
 	<header class="receipt-card__header">
 		<div class="receipt-card__info">
 			<p class="receipt-card__eyebrow">Recibo</p>

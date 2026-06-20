@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { enhance } from '$app/forms';
 	import { page } from '$app/state';
+	import { glowTracking, tilt } from '$lib/actions/interactions';
 	import '$lib/styles/login.scss';
 
 	let { form } = $props();
@@ -86,7 +87,7 @@
 		{/if}
 
 		{#if mode === 'login'}
-			<form method="post" action="?/signInEmail" class="auth-form" use:enhance id="form-login">
+			<form method="post" action="?/signInEmail" class="auth-form" use:enhance id="form-login" use:glowTracking use:tilt={{ intensity: 2 }}>
 				<label class="form-group">
 					<span class="form-group__label">Email</span>
 					<input type="email" name="email" required class="input" autocomplete="email" />
@@ -102,7 +103,7 @@
 				</button>
 			</form>
 		{:else}
-			<form method="post" action="?/signUpEmail" class="auth-form" use:enhance id="form-register">
+			<form method="post" action="?/signUpEmail" class="auth-form" use:enhance id="form-register" use:glowTracking use:tilt={{ intensity: 2 }}>
 				<label class="form-group">
 					<span class="form-group__label">Nombre</span>
 					<input type="text" name="name" required class="input" autocomplete="name" />

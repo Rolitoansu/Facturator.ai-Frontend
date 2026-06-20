@@ -9,6 +9,8 @@
 	import { MONTH_LABEL } from '$lib/constants/app';
 	import { enhance } from '$app/forms';
 	import { User, LogOut } from 'lucide-svelte';
+	import { fly } from 'svelte/transition';
+	import { backOut, expoIn } from 'svelte/easing';
 	import '$lib/styles/app-layout.scss';
 
 	let { children, data } = $props();
@@ -141,9 +143,15 @@
 	</header>
 
 	<main class="main">
-		<div class="content">
-			{@render children()}
-		</div>
+		{#key page.url.pathname}
+			<div 
+				class="content-transition-wrapper"
+				in:fly={{ y: 40, duration: 500, delay: 200, easing: backOut }}
+				out:fly={{ y: -40, duration: 200, easing: expoIn }}
+			>
+				{@render children()}
+			</div>
+		{/key}
 	</main>
 
 	<!-- FLOATING DOCK -->
